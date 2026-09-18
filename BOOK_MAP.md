@@ -46,5 +46,5 @@ Do not copy a demo architecture wholesale. For each source, record:
 1. construct inspected;
 2. model-vs-code control boundary;
 3. one failure mode;
-4. what we transfer into the Northstar/xFalcon exercise; and
+4. what we transfer into the **Northstar course exercise**; and
 5. what we deliberately reject.
