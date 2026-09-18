@@ -2,10 +2,18 @@
 
 Implement five distinct agent control-flow patterns against one fixed analytics scenario so you can recognize what a framework is doing later.
 
-## Source study / code archaeology
+## Study evidence
+
+Complete the module's single **Study Plan** in the course site first. This section is not an additional reading list; it specifies the observations and artifacts to capture from those sources.
 1. FREE code archaeology: inspect the public Chapter 5 simulation notebook (`ch05_foundational_architectures__RUN_NO_KEY_SIMULATION.ipynb`). Identify where task dependencies are represented and where code, not the model, controls readiness/termination. Optional book deep dive: Ch. 5 pp. 118–135.
 2. Inspect Chapter 7 data_viz_agent. In SOURCE_NOTES.md, diagram its Think → Plan → Act → data_state flow and label each transition M (model), C (control code), or T (tool).
 3. Before implementing your five patterns, write a 5-row comparison predicting how their traces should differ. After implementation, revise the table using actual traces.
+
+
+### Additional code-study prompts
+
+- `patterns/agents/basic_workflows.ipynb`: identify prompt chaining, routing, and parallelization; mark which transitions are code-owned and model-owned.
+- `patterns/agents/evaluator_optimizer.ipynb`: preview the generate/evaluate/revise loop and record its explicit exit condition.
 
 ## Tasks
 1. 1A — Single-shot router: implement single_shot_route(request, model). It must make exactly one model call, make zero tool calls, and return one of lookup | analysis | visualization | unsupported plus a short rationale.
@@ -43,10 +51,6 @@ Implement five distinct agent control-flow patterns against one fixed analytics 
 - `trace_examples.json containing one successful trace for each pattern`
 - `PATTERN_NOTES.md: 1–2 sentences on when you would and would not use each pattern`
 
-## Required Anthropic cookbook study
-
-- `patterns/agents/basic_workflows.ipynb`: identify prompt chaining, routing, and parallelization; mark which transitions are code-owned and model-owned.
-- `patterns/agents/evaluator_optimizer.ipynb`: preview the generate/evaluate/revise loop and record its explicit exit condition.
 
 ## Through-project milestone — SQL Harness M1: Pattern Primitives
 
