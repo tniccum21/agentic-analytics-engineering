@@ -2,6 +2,13 @@
 
 Prove that orchestration code can depend on stable capability interfaces rather than MCP implementation details.
 
+## Study evidence
+
+Complete the module's single **Study Plan** in the course site first. This section is not an additional reading list; it specifies the observations and artifacts to capture from those sources.
+
+- `claude_agent_sdk/02_The_observability_agent.ipynb`: trace how MCP tools are exposed and invoked.
+- `claude_agent_sdk/03_The_site_reliability_agent.ipynb`: inspect pre-tool safety hooks and write validation. Record which protections belong at the capability boundary even if the harness also has an upstream verifier.
+
 ## Tasks
 1. Create AnalyticsCapabilities with get_schema(table), run_readonly_query(sql), and render_chart(spec).
 2. Implement LocalNorthstarAdapter against the bundled SQLite data.
@@ -31,10 +38,6 @@ Prove that orchestration code can depend on stable capability interfaces rather 
 - `boundary-classification.md`
 - `test_capabilities.py`
 
-## Required Anthropic cookbook study
-
-- `claude_agent_sdk/02_The_observability_agent.ipynb`: trace how MCP tools are exposed and invoked.
-- `claude_agent_sdk/03_The_site_reliability_agent.ipynb`: inspect pre-tool safety hooks and write validation. Record which protections belong at the capability boundary even if the harness also has an upstream verifier.
 
 ## Through-project milestone — SQL Harness M4: Replaceable Hands
 
