@@ -86,6 +86,10 @@ Inspect the **course-supplied Northstar baseline** in `project/00-baseline.md` a
 
 Then redesign it as an explicit target architecture. No pre-existing learner system is assumed.
 
+**Architecture decision record (ADR) log**
+
+An ADR is a short record of a consequential design choice, its rationale, and its consequences. The log is intentionally empty at the start of the course. Learners add an ADR only when a lab produces a real architecture choice worth preserving and revisiting; later evidence may reject or supersede it. Routine implementation details do not need ADRs.
+
 **Through-project milestone**
 
 Freeze the supplied baseline and architecture for later comparison.
