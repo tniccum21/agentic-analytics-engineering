@@ -10,7 +10,7 @@ Given a natural-language analytics request, the harness should:
 2. discover only the schema/context it needs;
 3. generate one or more SQL candidates;
 4. verify the SQL **before execution**;
-5. execute through a replaceable read-only capability adapter (SQLite first, MCP later);
+5. execute through a replaceable read-only capability adapter (direct Northstar SQLite first, then the course-supplied Northstar MCP server);
 6. verify returned results and numeric claims;
 7. repair/retry within explicit budgets;
 8. return an evidence-grounded answer and execution trace;
@@ -75,4 +75,4 @@ Given a natural-language analytics request, the harness should:
 
 ## Start here
 
-Read `PROJECT_SPEC.md`, then use `MILESTONES.md` as the cumulative checklist. The `sql_harness/` package is intentionally skeletal: course assignments fill it in.
+Read `PROJECT_SPEC.md`, then use `MILESTONES.md` as the cumulative checklist. The `sql_harness/` package is intentionally skeletal: course assignments fill it in. The MCP exercises use only `northstar_mcp/`, the server supplied in this repository.
