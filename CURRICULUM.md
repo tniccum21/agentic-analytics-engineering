@@ -94,7 +94,7 @@ An ADR is a short record of a consequential design choice, its rationale, and it
 
 **Through-project milestone**
 
-Freeze the supplied baseline and architecture for later comparison.
+Freeze the supplied baseline **definition and code** plus `architecture-v0.md`. Inspect the 12 starter benchmark cases, but do not execute the benchmark in Module 0. The frozen baseline is run later after the course has built a consistent evaluation runner.
 
 **Artifacts**
 
