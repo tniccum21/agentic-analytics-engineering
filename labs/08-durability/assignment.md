@@ -2,10 +2,18 @@
 
 Make the workflow resumable and prove failure semantics with deterministic injected faults.
 
-## Source study / code archaeology
+## Study evidence
+
+Complete the module's single **Study Plan** in the course site first. This section is not an additional reading list; it specifies the observations and artifacts to capture from those sources.
 1. FREE source study: review LangGraph persistence/HITL and inspect `workflow_manager_agent` plus the insurance workflow/state-machine section in the public Chapter 7 notebook. Optional book deep dive: Ch. 7 pp. 195–200.
 2. List every guard condition you can find and classify it as retry, reject, escalate/HITL, or continue. Then implement the supplied analytics-specific guards rather than the e-commerce/insurance rules.
 3. Record checkpoint semantics separately from model context: what must survive a process crash, and what can be recomputed.
+
+
+### Additional code-study prompts
+
+- `claude_agent_sdk/05_Building_a_session_browser.ipynb`: inspect session listing, transcript replay, fork, and resume.
+- Map those concepts onto a provider-neutral SQL-harness run/session model; do not couple the project to Claude-specific transcript storage.
 
 ## Tasks
 1. Fault 1: data tool times out twice, succeeds on third call; retry policy permits exactly 3 attempts.
@@ -38,10 +46,6 @@ Make the workflow resumable and prove failure semantics with deterministic injec
 - `resume-trace.json`
 - `SOURCE_NOTES.md`
 
-## Required Anthropic cookbook study
-
-- `claude_agent_sdk/05_Building_a_session_browser.ipynb`: inspect session listing, transcript replay, fork, and resume.
-- Map those concepts onto a provider-neutral SQL-harness run/session model; do not couple the project to Claude-specific transcript storage.
 
 ## Through-project milestone — SQL Harness M8: Durable Sessions
 
