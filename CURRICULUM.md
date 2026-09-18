@@ -2,6 +2,8 @@
 
 This file is the canonical Markdown curriculum for the course. The interactive site in `index.html`, the lab specifications in `labs/`, and the through-project in `project/` provide the executable detail.
 
+Each module has **one Study Plan**. Required readings, required code studies, study prompts, and optional Packt enrichment are consolidated there rather than repeated in multiple sections.
+
 ## Course goal
 
 Build a production-oriented **self-improving SQL generation agentic harness** while learning how to separate model judgment, deterministic control flow, state, tools, verification, evaluation, persistence, and release governance.
@@ -64,7 +66,7 @@ At the end of the course, the system must be:
 - durable state vs. model context
 - MCP as capability boundary
 
-**Required free study**
+**Study plan — required/free**
 
 - Anthropic — Scaling Managed Agents
 - Claude Platform — Managed Agents overview
@@ -75,16 +77,18 @@ At the end of the course, the system must be:
 
 **Lab**
 
-Map the current analytics system and label each meaningful step:
+Inspect the **course-supplied Northstar baseline** in `project/00-baseline.md` and `project/sql_harness/baseline.py`. Classify each meaningful step:
 
 - D = deterministic code
 - L = LLM judgment
-- T = tool/MCP capability
+- T = tool/capability
 - S = Skill/domain expertise
+
+Then redesign it as an explicit target architecture. No pre-existing learner system is assumed.
 
 **Through-project milestone**
 
-Freeze the initial baseline and architecture.
+Freeze the supplied baseline and architecture for later comparison.
 
 **Artifacts**
 
@@ -109,7 +113,7 @@ Freeze the initial baseline and architecture.
 - stop conditions
 - structured traces
 
-**Required free study**
+**Study plan — required/free**
 
 - DeepLearning.AI — AI Agents in LangGraph / agent-from-scratch material
 - public Packt Chapter 5 and Chapter 7 companion code
@@ -143,7 +147,7 @@ Important course boundary: use only the bundled Northstar SQLite database and fa
 - deterministic merge behavior
 - state serialization
 
-**Required free study**
+**Study plan — required/free**
 
 - LangChain Academy — Introduction to LangGraph
 - LangGraph Graph API
@@ -175,7 +179,7 @@ Create `project/sql_harness/models.py` with typed request, schema context, SQL c
 - explicit graph edges
 - bounded repair
 
-**Required free study**
+**Study plan — required/free**
 
 - LangGraph workflow-pattern material
 - Anthropic `patterns/agents/orchestrator_workers.ipynb`
@@ -220,7 +224,7 @@ Include clarification, bounded repair, and optional candidate fan-out.
 - defense in depth
 - typed capability errors
 
-**Required free study**
+**Study plan — required/free**
 
 - Hugging Face MCP course — architecture and capabilities
 - Anthropic `claude_agent_sdk/02_The_observability_agent.ipynb`
@@ -265,7 +269,7 @@ Add capability adapters and contract tests so changing transport requires config
 - one-replan policy
 - capability availability
 
-**Required free study**
+**Study plan — required/free**
 
 - Anthropic `claude_agent_sdk/01_The_chief_of_staff_agent.ipynb`
 - Anthropic `patterns/agents/orchestrator_workers.ipynb`
@@ -298,7 +302,7 @@ Create `project/sql_harness/planner.py` for multi-query questions while bypassin
 - bounded revision
 - escalation
 
-**Required free study**
+**Study plan — required/free**
 
 - Anthropic `patterns/agents/evaluator_optimizer.ipynb`
 - Anthropic `claude_agent_sdk/08_Dynamic_workflows.ipynb`
@@ -334,7 +338,7 @@ A hard verifier failure cannot be overridden by critic opinion.
 
 **Goal:** Run one evidence-grounded analytical workflow end to end and prove adapter portability.
 
-**Required free study**
+**Study plan — required/free**
 
 - Phoenix talk-to-data material
 - public Packt Chapter 8 data analysis / V&V / tri-agent code
@@ -383,7 +387,7 @@ Produce structured plan, schema context, SQL attempts, verification records, evi
 - durable state vs. transcript
 - terminal failure states
 
-**Required free study**
+**Study plan — required/free**
 
 - LangGraph persistence/HITL
 - Anthropic `claude_agent_sdk/05_Building_a_session_browser.ipynb`
@@ -409,7 +413,7 @@ Create `project/sql_harness/persistence.py` and prove resumed runs do not duplic
 
 **Goal:** Evaluate multi-agent collaboration empirically instead of assuming it is better.
 
-**Required free study**
+**Study plan — required/free**
 
 - CrewAI docs
 - DeepLearning.AI CrewAI course
@@ -441,7 +445,7 @@ Write an evidence-based `project/multi_agent_decision.md`.
 
 **Goal:** Build a frozen regression suite that measures nodes, trajectories, and outcomes separately.
 
-**Required free study**
+**Study plan — required/free**
 
 - DeepLearning.AI — Evaluating AI Agents
 - Anthropic eval guidance
@@ -496,7 +500,7 @@ Create `project/sql_harness/evals.py` and version the frozen benchmark before an
 - bounded unattended execution
 - release gates
 
-**Required free study**
+**Study plan — required/free**
 
 - Anthropic trustworthy/reliability material
 - Anthropic `claude_agent_sdk/03_The_site_reliability_agent.ipynb`
