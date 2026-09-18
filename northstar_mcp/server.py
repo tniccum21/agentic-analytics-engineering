@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
+import sqlite3
 
 from mcp.server import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
@@ -49,7 +50,7 @@ def run_readonly_query(sql: str, max_rows: int = 200) -> dict[str, Any]:
     """Execute a SELECT/CTE query with a server-side result-row cap."""
     try:
         return service.run_readonly_query(sql, max_rows=max_rows)
-    except (ValueError, sqlite3.Error) as exc:  # type: ignore[name-defined]
+    except (ValueError, sqlite3.Error) as exc:
         raise ToolError(str(exc)) from exc
 
 
