@@ -2,10 +2,18 @@
 
 Assemble the learned patterns into one complete evidence-grounded analytics workflow, first through the direct SQLite adapter and then through the course-supplied Northstar MCP server.
 
-## Source study / code archaeology
+## Study evidence
+
+Complete the module's single **Study Plan** in the course site first. This section is not an additional reading list; it specifies the observations and artifacts to capture from those sources.
 1. FREE source study: work through the Phoenix talk-to-data example and inspect `tri_agent_pipeline` in the public Chapter 8 simulation notebook. Identify the explicit boundary between candidate insight generation and verification. Optional book deep dive: Ch. 8 pp. 204–232.
-2. Write PIPELINE_MAPPING.md mapping Data Analysis → V&V → GPS from the book onto our Planner/Workers → Verifiers/Critics → reanalysis/escalation architecture.
-3. Do not import the book pipeline verbatim; preserve our typed state, evidence IDs, MCP adapter boundary, and deterministic convergence rules.
+2. Write PIPELINE_MAPPING.md mapping Data Analysis → V&V → GPS from the book onto the course Planner/Workers → Verifiers/Critics → reanalysis/escalation architecture.
+3. Do not import the book pipeline verbatim; preserve the course's typed state, evidence IDs, MCP adapter boundary, and deterministic convergence rules.
+
+
+### Additional code-study prompts
+
+- `capabilities/text_to_sql/guide.ipynb`: trace the full text-to-SQL flow, including schema/context handling and any iterative/self-improvement behavior.
+- Write `ANTHROPIC_SQL_NOTES.md` with three ideas we will reuse and three places the course's typed/verifier-gated harness intentionally differs.
 
 ## Tasks
 1. Answer exactly: ‘Why did gross margin fall from Q1 to Q2, and which region contributed most?’
@@ -42,10 +50,6 @@ Assemble the learned patterns into one complete evidence-grounded analytics work
 - `PIPELINE_MAPPING.md`
 - `SOURCE_NOTES.md`
 
-## Required Anthropic cookbook study
-
-- `capabilities/text_to_sql/guide.ipynb`: trace the full text-to-SQL flow, including schema/context handling and any iterative/self-improvement behavior.
-- Write `ANTHROPIC_SQL_NOTES.md` with three ideas we will reuse and three places our typed/verifier-gated harness intentionally differs.
 
 ## Through-project milestone — SQL Harness M7: Complete Vertical Slice
 
