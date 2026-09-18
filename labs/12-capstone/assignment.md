@@ -2,6 +2,13 @@
 
 Demonstrate with evidence that the engineered workflow improves reliability/quality enough to justify its added complexity.
 
+## Study evidence
+
+Complete the module's single **Study Plan** in the course site first. This section is not an additional reading list; it specifies the observations and artifacts to capture from those sources.
+
+- Revisit `claude_agent_sdk/08_Dynamic_workflows.ipynb`: audit every autonomous region in the final harness and justify why it should be autonomous rather than a deterministic script.
+- Revisit `capabilities/text_to_sql/`: compare the course final benchmark/evaluation and improvement design to Anthropic's free reference structure.
+
 ## Tasks
 1. Freeze the original ‘LLM does everything’ baseline and the final engineered workflow.
 2. Run both against the same 25-case evaluation suite with identical model access and data.
@@ -31,10 +38,6 @@ Demonstrate with evidence that the engineered workflow improves reliability/qual
 - `capstone/traces/`
 - `capstone/architecture-final.md`
 
-## Required Anthropic cookbook study
-
-- Revisit `claude_agent_sdk/08_Dynamic_workflows.ipynb`: audit every autonomous region in the final harness and justify why it should be autonomous rather than a deterministic script.
-- Revisit `capabilities/text_to_sql/`: compare our final benchmark/evaluation and improvement design to Anthropic's free reference structure.
 
 ## Through-project milestone — SQL Harness M12: Capstone + Improvement Study
 
