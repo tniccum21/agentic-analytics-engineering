@@ -3,7 +3,7 @@
 All Packt code referenced here is from the **public companion GitHub repository**. The purchased PDF is optional enrichment and is not required to perform the code archaeology or labs.
 
 ← Course homePackt Code Review: What We Actually Want
-Rule: read the code as architecture evidence, not starter code to copy. Each course lab transfers one idea into the Northstar/xFalcon context and then proves it with acceptance tests.
+Rule: read the code as architecture evidence, not starter code to copy. Each course lab transfers one idea into the self-contained Northstar course context and then proves it with acceptance tests.
 Chapter 5 — Planning and task DAGsInspect: PlanningAgent, dependency-aware/topological execution, deadlock/cycle handling, monitoring/revision. Transfer: typed AnalysisPlan + deterministic plan validator/scheduler. Do not copy: demo-specific prompts, provider wrappers, or opaque plan repair.
 Chapter 7 — Tool use, manager, workflow/HITLInspect: data_viz_agent Think/Plan/Act + data_state; ManagerAgent specialist delegation; workflow_manager_agent HITL gate; insurance state-machine guards. Transfer: traceable tool loops, structured aggregation, guard conditions. Do not copy: the domain-specific agent chain just because it is multi-agent.
 Chapter 8 — Analytics + V&VInspect: Data Analysis stages, Verification & Validation, conflicting evidence, tri_agent_pipeline. Transfer: trust-then-escalate: every candidate finding is VERIFIED, FLAGGED, or ESCALATED before finalization. Keep this separate from the quality critic.
