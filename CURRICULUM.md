@@ -4,6 +4,8 @@ This file is the canonical Markdown curriculum for the course. The interactive s
 
 Each module has **one Study Plan**. Required readings, required code studies, study prompts, and optional Packt enrichment are consolidated there rather than repeated in multiple sections.
 
+The module sequence is deliberate: **Study Plan first → course lesson/concepts → project context → assignment/lab → evidence/self-grade**. Learners should encounter the required sources before comprehension checks or implementation exercises.
+
 ## Course goal
 
 Build a production-oriented **self-improving SQL generation agentic harness** while learning how to separate model judgment, deterministic control flow, state, tools, verification, evaluation, persistence, and release governance.
