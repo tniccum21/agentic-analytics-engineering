@@ -7,3 +7,10 @@ Early modules use **Northstar Retail**, a tiny bundled SQLite database with know
 - Module 7 is the transition point from the bundled capability adapter to your real MCP-backed system.
 
 The site tracks the same acceptance tests as checkboxes. Mark them only after the test or artifact demonstrates the behavior.
+
+
+## Study-plan convention
+
+The interactive course site presents exactly one **Study Plan** per module. That section consolidates required reading, required code study, study prompts, and optional paid enrichment. Assignment files may state the evidence to capture from those sources, but they should not introduce a second independent reading list.
+
+All required labs operate on course-supplied Northstar assets. A learner is never expected to arrive with an existing analytics platform, MCP server, or agent workflow.
