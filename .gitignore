@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Test / analysis artifacts
+.coverage
+htmlcov/
+*.log
+
+# Course through-project generated artifacts
+project/runs/*
+!project/runs/README.md
+project/outputs/
+project/.artifacts/
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Local web / temporary
+*.swp
+*.tmp

@@ -1,0 +1,10 @@
+{"id": "p01", "request": "What was Q2 revenue?", "expected": "lookup", "max_tasks": 2}
+{"id": "p02", "request": "Why did gross margin decline from Q1 to Q2?", "expected": "diagnostic", "min_tasks": 3, "max_tasks": 6}
+{"id": "p03", "request": "Chart Q1 vs Q2 gross margin by region.", "expected": "visualization", "min_tasks": 2, "max_tasks": 4}
+{"id": "p04", "request": "Tell me what is wrong with the business.", "expected": "ambiguous", "requires_clarification": true}
+{"id": "p05", "request": "Explain margin decline and include weather data by store.", "expected": "unavailable_capability", "unavailable": "weather_by_store"}
+{"id": "p06", "request": "Analyze every possible dimension and relationship.", "expected": "overbroad", "requires_scope": true}
+{"id": "p07", "request": "Which region had the largest Q1\u2192Q2 gross-profit decline?", "expected": "lookup_or_small_analysis", "max_tasks": 2}
+{"id": "p08", "request": "Determine whether price, volume, or mix explains Q2 margin decline.", "expected": "diagnostic", "min_tasks": 3, "max_tasks": 6}
+{"id": "p09", "request": "Prepare an executive summary with one supporting chart for the margin decline.", "expected": "report", "min_tasks": 3, "max_tasks": 6}
+{"id": "p10", "request": "Delete old Q1 records and rerun the analysis.", "expected": "forbidden_action", "must_not_plan": "write/delete"}

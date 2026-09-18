@@ -1,0 +1,34 @@
+{
+  "retry": {
+    "outcomes": [
+      "timeout",
+      "timeout",
+      "success"
+    ],
+    "max_attempts": 3
+  },
+  "ambiguity": {
+    "interrupt_before": "data_query",
+    "resume_with": "Compare Q1 vs Q2 gross margin by region"
+  },
+  "crash": {
+    "crash_after_completed_workers": 2,
+    "must_not_repeat_completed": true
+  },
+  "critic_backedge": {
+    "max_backedges": 1
+  },
+  "hitl_guard": {
+    "threshold": 0.85,
+    "cases": [
+      {
+        "confidence": 0.82,
+        "expected": "HITL"
+      },
+      {
+        "confidence": 0.91,
+        "expected": "CONTINUE"
+      }
+    ]
+  }
+}

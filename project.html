@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Through-Project — Self-Improving SQL Harness</title>
+<style>
+:root{--bg:#f7f7f5;--p:#fff;--p2:#f1f2ef;--t:#171816;--m:#666b63;--l:#dfe2dc;--a:#315b49}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:15px/1.58 Inter,system-ui,sans-serif}.wrap{max-width:1080px;margin:auto;padding:34px 24px 80px}a{color:var(--a)}.hero,.sec{background:var(--p);border:1px solid var(--l);border-radius:16px;padding:24px;margin:12px 0}.ey{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--a);font-weight:800}h1{font-size:38px;line-height:1.05;margin:8px 0 14px}h2{font-size:22px;margin:0 0 10px}h3{font-size:16px;margin:18px 0 8px}.muted{color:var(--m)}.call{border-left:4px solid var(--a);background:var(--p2);padding:14px 16px;border-radius:9px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{background:var(--p2);border:1px solid var(--l);border-radius:12px;padding:14px}.card strong{display:block;margin-bottom:5px}.diagram{white-space:pre;overflow:auto;background:#101310;color:#eef1ed;border-radius:12px;padding:16px;font:12px/1.45 ui-monospace,monospace}table{width:100%;border-collapse:collapse}th,td{text-align:left;vertical-align:top;border-top:1px solid var(--l);padding:10px 8px}th{font-size:12px;color:var(--m)}code{background:var(--p2);padding:2px 5px;border-radius:5px}.links{display:flex;gap:8px;flex-wrap:wrap}.links a{border:1px solid var(--l);padding:7px 10px;border-radius:9px;text-decoration:none}@media(max-width:700px){.grid{grid-template-columns:1fr}h1{font-size:31px}}</style></head>
+<body><main class="wrap">
+<div class="links"><a href="index.html">← Course home</a><a href="project/PROJECT_SPEC.md">Project spec</a><a href="project/MILESTONES.md">Milestones</a><a href="project/benchmark/baseline_cases.jsonl">Starter benchmark</a></div>
+<section class="hero"><div class="ey">Course through-project</div><h1>Self-Improving SQL Generation Agentic Harness</h1><p class="muted">One system, built incrementally through all 13 modules. The project starts as a crude NL→SQL baseline and ends as a typed, verified, durable, eval-driven harness with a champion/challenger improvement loop.</p><div class="call"><strong>Self-improving does not mean self-modifying in production.</strong> The harness observes benchmark failures, proposes configuration changes, evaluates challengers offline, and promotes only through explicit correctness, safety, cost, and approval gates.</div></section>
+<section class="sec"><h2>Target runtime</h2><div class="diagram">USER QUESTION
+      │
+      ▼
+REQUEST / ROUTER
+      │
+      ├── simple ────────────────┐
+      │                          │
+      └── complex → PLANNER      │
+                     │           │
+                     └─────┬─────┘
+                           ▼
+                    SCHEMA CONTEXT
+                           │
+                           ▼
+                     SQL GENERATOR
+                           │
+                           ▼
+                    PRE-EXEC VERIFIER
+                    │              │
+                  reject          pass
+                    │              │
+                  REPAIR           ▼
+                    ▲          SQL ADAPTER
+                    │              │
+                    └──────────┐   ▼
+                               RESULT CHECKS
+                                    │
+                                    ▼
+                              ANSWER + EVIDENCE
+                                    │
+                                    ▼
+                                EVALUATORS</div></section>
+<section class="sec"><h2>Offline improvement plane</h2><div class="diagram">COMPLETED RUNS / BENCHMARK
+          │
+          ▼
+    FAILURE ANALYZER
+          │
+          ▼
+ IMPROVEMENT PROPOSAL
+(prompt / examples / context policy / thresholds / routing)
+          │
+          ▼
+  APPROVAL / POLICY GATE
+          │
+          ▼
+   CHALLENGER EVALUATION
+          │
+    ┌─────┴─────┐
+  regress      improve
+    │             │
+ reject        promote
+                  │
+                  ▼
+        versioned champion + rollback</div></section>
+<section class="sec"><h2>What each module adds</h2><table><thead><tr><th>Module</th><th>Harness increment</th><th>Primary artifact</th></tr></thead><tbody>
+<tr><td>0</td><td>Freeze current baseline, target architecture, and initial benchmark.</td><td><code>baseline/</code>, architecture</td></tr>
+<tr><td>1</td><td>Five control-flow primitives: single-shot, ReAct, planner/executor, reflexive, verifier-gated.</td><td><code>patterns.py</code></td></tr>
+<tr><td>2</td><td>Typed state for request, SQL attempts, evidence, verification, evals, configuration versions.</td><td><code>models.py</code></td></tr>
+<tr><td>3</td><td>Explicit graph, routing, candidate fan-out and fan-in.</td><td><code>graph.py</code></td></tr>
+<tr><td>4</td><td>Replaceable schema/SQL adapters; SQLite and MCP implementations.</td><td><code>adapters/</code></td></tr>
+<tr><td>5</td><td>Structured planner for multi-step analytical questions and clarification.</td><td><code>planner.py</code></td></tr>
+<tr><td>6</td><td>Pre-exec SQL verification, bounded repair, result verification, claim checks.</td><td><code>verification.py</code></td></tr>
+<tr><td>7</td><td>Complete NL→SQL→answer vertical slice.</td><td>recorded runs</td></tr>
+<tr><td>8</td><td>Checkpointing, resume, idempotency, session history.</td><td><code>persistence.py</code></td></tr>
+<tr><td>9</td><td>Empirical multi-agent comparison without forcing it into the design.</td><td>comparison report</td></tr>
+<tr><td>10</td><td>Frozen benchmark, deterministic result graders, trajectory and quality evals.</td><td><code>evals.py</code></td></tr>
+<tr><td>11</td><td>Champion/challenger configuration versions, improvement proposals, promotion/rollback.</td><td><code>improvement.py</code></td></tr>
+<tr><td>12</td><td>Baseline-vs-final study plus one full improvement-cycle experiment.</td><td>capstone</td></tr>
+</tbody></table></section>
+<section class="sec"><h2>Anthropic code backbone</h2><div class="grid">
+<div class="card"><strong>Basic workflows</strong><span class="muted">Minimal chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer.</span><br><a href="https://github.com/anthropics/claude-cookbooks/tree/main/patterns/agents">Open</a></div>
+<div class="card"><strong>Dynamic workflows</strong><span class="muted">Subagents vs deterministic scripts, fan-out, pipelines, structured output, adversarial verification.</span><br><a href="https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/08_Dynamic_workflows.ipynb">Open</a></div>
+<div class="card"><strong>Text-to-SQL</strong><span class="muted">Natural-language SQL generation, RAG/context, self-improvement, and a real evaluation suite.</span><br><a href="https://github.com/anthropics/claude-cookbooks/tree/main/capabilities/text_to_sql">Open</a></div>
+<div class="card"><strong>Sessions + MCP + safety + hosting</strong><span class="muted">Session browser, observability/MCP, SRE write guards, and hosting recipes.</span><br><a href="https://github.com/anthropics/claude-cookbooks/tree/main/claude_agent_sdk">Open</a></div>
+</div></section>
+<section class="sec"><h2>Definition of done</h2><ul><li>The harness is model-agnostic and adapter-agnostic.</li><li>Unsafe SQL never reaches execution.</li><li>Correctness is evaluated against results, not merely SQL-string similarity.</li><li>Every settled numeric claim can be traced to evidence.</li><li>Loops are bounded and failures are explicit.</li><li>A challenger cannot become champion by improving average quality while regressing safety/hard correctness.</li><li>Every promoted configuration is versioned and reversible.</li></ul></section>
+</main></body></html>

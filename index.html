@@ -1,0 +1,1537 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Agentic Analytics Engineering</title>
+  <meta name="description" content="A project-driven course for turning an LLM + Skills + MCP server into a controlled agentic analytics workflow." />
+  <style>
+    :root {
+      --bg:#f7f7f5; --panel:#ffffff; --panel-2:#f1f2ef; --text:#171816; --muted:#666b63;
+      --line:#dfe2dc; --accent:#315b49; --accent-2:#dfeae4; --danger:#8b3f3f; --shadow:0 8px 30px rgba(26,31,28,.07);
+    }
+    [data-theme="dark"] {
+      --bg:#111411; --panel:#181c19; --panel-2:#202521; --text:#edf0ec; --muted:#aab2aa;
+      --line:#303630; --accent:#81b69f; --accent-2:#23372e; --danger:#e28d8d; --shadow:none;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,textarea,select{font:inherit}
+    a{color:var(--accent);text-underline-offset:3px}
+    .app{min-height:100vh;display:grid;grid-template-columns:320px 1fr}
+    .sidebar{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);background:var(--panel);padding:22px 18px;overflow:auto}
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+    .logo{width:40px;height:40px;border-radius:12px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800}
+    .brand h1{font-size:16px;line-height:1.2;margin:0}.brand p{font-size:12px;color:var(--muted);margin:4px 0 0}
+    .progress-card{background:var(--panel-2);border:1px solid var(--line);padding:14px;border-radius:14px;margin-bottom:16px}
+    .progress-row{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+    .progress-row strong{font-size:22px}.progress-row span{color:var(--muted);font-size:12px}
+    .bar{height:8px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:9px}
+    .bar>i{display:block;height:100%;width:0;background:var(--accent);transition:.25s}
+    .side-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+    button,.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:8px 10px;border-radius:9px;cursor:pointer}
+    button:hover,.btn:hover{border-color:var(--accent)}
+    button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    button.ghost{background:transparent}
+    .module-list{display:flex;flex-direction:column;gap:5px}
+    .module-link{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:9px;border-radius:10px;color:var(--text);text-decoration:none;border:1px solid transparent}
+    .module-link:hover,.module-link.active{background:var(--panel-2);border-color:var(--line)}
+    .module-link .num{width:26px;height:26px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;font-size:12px;color:var(--muted)}
+    .module-link .title{font-size:13px;font-weight:650;line-height:1.25}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+    .dot.in-progress{background:#d4a13b}.dot.done{background:var(--accent)}
+    .main{padding:34px clamp(24px,5vw,72px) 80px;max-width:1280px;width:100%}
+    .hero{display:grid;grid-template-columns:1.5fr .75fr;gap:22px;align-items:stretch;margin-bottom:28px}
+    .hero-card,.resume-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
+    .eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:800;color:var(--accent)}
+    h2{font-size:36px;letter-spacing:-.03em;line-height:1.05;margin:8px 0 12px}
+    .hero p{color:var(--muted);max-width:760px;margin:0}
+    .resume-card h3{margin:6px 0;font-size:19px}.resume-card p{margin:0 0 14px;color:var(--muted);font-size:13px}
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+    .filters input{flex:1;min-width:220px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:10px 12px}
+    .course-outline{display:grid;gap:12px;margin-bottom:30px}
+    .outline-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 18px;display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;cursor:pointer}
+    .outline-card:hover{border-color:var(--accent)}
+    .outline-num{width:40px;height:40px;border-radius:11px;background:var(--panel-2);display:grid;place-items:center;font-weight:800}
+    .outline-card h3{font-size:16px;margin:0 0 2px}.outline-card p{font-size:13px;color:var(--muted);margin:0}
+    .chip{font-size:11px;border:1px solid var(--line);padding:4px 7px;border-radius:999px;color:var(--muted);white-space:nowrap}
+    .module-detail{display:none}.module-detail.active{display:block}
+    .module-header{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;margin-bottom:14px;box-shadow:var(--shadow)}
+    .module-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+    .module-header h2{font-size:30px;margin:4px 0 8px}
+    .module-header .goal{font-size:17px;color:var(--muted);max-width:820px}
+    .status-select{border:1px solid var(--line);background:var(--panel-2);color:var(--text);border-radius:9px;padding:8px}
+    .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .section{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:20px;margin:12px 0}
+    .section h3{font-size:18px;margin:0 0 12px}.section h4{font-size:14px;margin:18px 0 8px}
+    .resource{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
+    .resource:first-of-type{border-top:0}
+    .resource input{margin-top:4px}
+    .resource .r-title{font-weight:700}.resource .r-note{color:var(--muted);font-size:13px;margin-top:3px}
+    .lab-card{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:16px}
+    .deliverable{padding:10px 12px;border-left:3px solid var(--accent);background:var(--panel);border-radius:7px;margin:10px 0}
+    .checklist{display:grid;gap:7px;margin:10px 0 0}.checklist label{display:flex;gap:8px;align-items:flex-start}
+    textarea{width:100%;min-height:105px;resize:vertical;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);padding:10px}
+    .prompt{white-space:pre-wrap;background:#0f1310;color:#edf0ec;border-radius:11px;padding:14px;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;max-height:360px;overflow:auto}
+    [data-theme="dark"] .prompt{background:#0b0d0b}
+    .prompt-actions{display:flex;gap:8px;margin-top:9px}
+    .grade-grid{display:grid;grid-template-columns:1fr 180px;gap:14px}
+    .score-box{border:1px solid var(--line);border-radius:12px;padding:13px;background:var(--panel-2)}
+    .score-box input{width:100%;margin-top:8px}
+    .score-big{font-size:26px;font-weight:800}
+
+    .lesson-nav{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px}
+    .lesson-nav a{font-size:12px;text-decoration:none;border:1px solid var(--line);padding:5px 8px;border-radius:999px;color:var(--muted)}
+    .lesson-nav a:hover{border-color:var(--accent);color:var(--accent)}
+    .lesson-callout{border-left:4px solid var(--accent);background:var(--panel-2);padding:14px 16px;border-radius:10px;margin:14px 0}
+    .lesson-callout strong{display:block;margin-bottom:4px}
+    .lesson-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .concept-card{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--panel-2)}
+    .concept-card h4{margin:0 0 6px;font-size:14px}.concept-card p{margin:0;color:var(--muted);font-size:13px}
+    .mini-table{width:100%;border-collapse:collapse;margin:10px 0}.mini-table th,.mini-table td{border-top:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}.mini-table th{font-size:12px;color:var(--muted);font-weight:700}
+    .quiz-q{border-top:1px solid var(--line);padding:12px 0}.quiz-q:first-of-type{border-top:0}.quiz-q textarea{min-height:70px}
+    .worksheet-table{width:100%;border-collapse:collapse}.worksheet-table th,.worksheet-table td{border-top:1px solid var(--line);padding:8px 6px;vertical-align:top}.worksheet-table th{font-size:12px;color:var(--muted);text-align:left}.worksheet-table input,.worksheet-table select,.worksheet-table textarea{width:100%;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--text);padding:7px}.worksheet-table textarea{min-height:62px}
+    .worksheet-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.adr-list{display:grid;gap:10px}.adr-card{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--panel-2)}.adr-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.adr-title{font-weight:750}.adr-meta{font-size:11px;color:var(--muted);margin-top:3px}.adr-body{margin-top:8px;color:var(--muted);font-size:13px}
+    .adr-form{display:grid;grid-template-columns:1fr 170px;gap:10px}.adr-form textarea,.adr-form input,.adr-form select{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);padding:8px}.adr-form textarea{min-height:80px;grid-column:1/-1}
+    .diagram{white-space:pre;overflow:auto;background:#0f1310;color:#edf0ec;border-radius:11px;padding:14px;font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    @media (max-width:900px){.lesson-grid,.adr-form{grid-template-columns:1fr}.worksheet-table{font-size:12px}}
+    .footer-note{color:var(--muted);font-size:12px;margin-top:24px}
+    .hidden{display:none!important}
+    .toast{position:fixed;right:24px;bottom:24px;background:var(--text);color:var(--bg);padding:10px 13px;border-radius:9px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}
+    .toast.show{opacity:1;transform:none}
+    dialog{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:16px;padding:20px;max-width:640px;width:90%;box-shadow:var(--shadow)}
+    dialog::backdrop{background:rgba(0,0,0,.4)}
+    code{background:var(--panel-2);padding:2px 5px;border-radius:5px}
+    @media (max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}.module-list{display:none}.main{padding:24px 16px 60px}.hero{grid-template-columns:1fr}.grade-grid{grid-template-columns:1fr}}
+  
+
+    .reference-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:0 0 20px}
+    .reference-card{display:block;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px}
+    .reference-card:hover{border-color:var(--accent)}
+    .reference-card strong{display:block;margin-bottom:4px}.reference-card span{color:var(--muted);font-size:12px}
+    .source-study{background:var(--accent-2);border:1px solid var(--line);border-radius:12px;padding:15px;margin:14px 0}
+    .source-study h4{margin:0 0 8px}.source-study ol{margin:8px 0 0 20px;padding:0}.source-study li{margin:7px 0}
+    .book-map-box{display:grid;grid-template-columns:180px 1fr;gap:12px;align-items:start;border:1px solid var(--line);background:var(--panel-2);padding:13px;border-radius:11px;margin:10px 0}
+    .book-map-box .book-pages{font-weight:800;color:var(--accent)}
+    .book-map-box .book-note{font-size:13px;color:var(--muted)}
+    @media(max-width:800px){.reference-strip{grid-template-columns:1fr}.book-map-box{grid-template-columns:1fr}}
+
+    .assignment{border:1px solid var(--line);background:var(--panel);border-radius:15px;padding:20px;margin:12px 0}
+
+    .project-mile{border:1px solid var(--accent);background:linear-gradient(180deg,var(--panel),var(--panel-2));border-radius:15px;padding:20px;margin:12px 0}
+    .project-mile h3{margin:4px 0 8px}.project-files{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.project-files code{font-size:12px}
+    .source-code-study{border:1px solid var(--line);border-left:4px solid var(--accent);background:var(--panel);border-radius:12px;padding:16px;margin:12px 0}
+    .source-code-study ul{margin:8px 0 0 20px;padding:0}.source-code-study li{margin:8px 0}
+
+    .assignment .assignment-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .assignment h3{margin:0 0 5px}.assignment h4{margin:18px 0 8px}
+    .assignment ol,.assignment ul{margin:8px 0 8px 22px;padding:0}.assignment li{margin:6px 0}
+    .assignment .fixed-box{background:var(--panel-2);border-left:3px solid var(--accent);padding:10px 13px;border-radius:8px}
+    .assignment-code{background:#0f1310;color:#edf0ec;border-radius:10px;padding:12px;white-space:pre-wrap;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .pattern-atlas{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:12px 0}
+    .pattern-card{border:1px solid var(--line);background:var(--panel-2);border-radius:12px;padding:12px}
+    .pattern-card strong{display:block;margin-bottom:5px}.pattern-card span{color:var(--muted);font-size:12px}
+    @media(max-width:1100px){.pattern-atlas{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:650px){.pattern-atlas{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">AA</div>
+      <div><h1>Agentic Analytics Engineering</h1><p>Build the workflow, not just the agent.</p></div>
+    </div>
+    <div class="progress-card">
+      <div class="progress-row"><strong id="overallPct">0%</strong><span id="overallText">0 / 13 modules complete</span></div>
+      <div class="bar"><i id="overallBar"></i></div>
+    </div>
+    <div class="side-actions">
+      <button id="exportBtn">Export progress</button>
+      <button id="importBtn">Import progress</button>
+      <button id="themeBtn">Toggle theme</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+    <div id="moduleList" class="module-list"></div>
+  </aside>
+
+  <main class="main">
+    <section id="homeView">
+      <div class="hero">
+        <div class="hero-card">
+          <div class="eyebrow">Project-driven curriculum</div>
+          <h2>Turn your LLM + Skills + MCP server into a real agentic workflow.</h2>
+          <p>Learn explicit state, planning, orchestration, bounded critique/revision loops, MCP boundaries, evals, persistence, and production engineering by continuously improving one system: a <strong>self-improving SQL generation agentic harness</strong>. <strong>Every required reading, code study, and lab is completable with free online material.</strong> The purchased Packt book is an optional enrichment track.</p>
+        </div>
+        <div class="resume-card">
+          <div class="eyebrow">Continue</div>
+          <h3 id="resumeTitle">Module 0</h3>
+          <p id="resumeText">Start with the architecture mental model.</p>
+          <button class="primary" id="resumeBtn">Open module</button>
+        </div>
+      </div>
+      <div class="reference-strip">
+        <a class="reference-card" href="project.html"><strong>Through-project: SQL Harness</strong><span>Build one NL→SQL harness across every module, ending with eval-gated self-improvement.</span></a>
+        <a class="reference-card" href="ANTHROPIC_CODE_MAP.md" target="_blank"><strong>Anthropic cookbook map</strong><span>Exact free notebooks used across patterns, MCP, SQL, sessions, evals, safety, and hosting.</span></a>
+        <a class="reference-card" href="book-map.html"><strong>Free-first book map</strong><span>Required free coverage first; paid Packt pages are optional enrichment.</span></a>
+        <a class="reference-card" href="packt-code-review.html"><strong>Packt code review</strong><span>What to inspect, what to transfer, and what not to copy.</span></a>
+        <a class="reference-card" href="labs/SOURCE_STUDY_TEMPLATE.md" target="_blank"><strong>Source-study template</strong><span>Five questions to answer whenever we learn from external code.</span></a>
+      </div>
+      <div class="filters">
+        <input id="searchInput" placeholder="Search modules, topics, labs…" />
+        <button class="ghost" data-filter="all">All</button>
+        <button class="ghost" data-filter="in-progress">In progress</button>
+        <button class="ghost" data-filter="done">Done</button>
+      </div>
+      <div id="outline" class="course-outline"></div>
+    </section>
+
+    <section id="detailView"></section>
+
+    <div class="footer-note">
+      Progress is stored only in this browser via <code>localStorage</code>. Use Export progress to create a backup JSON file.
+    </div>
+  </main>
+</div>
+
+<dialog id="importDialog">
+  <h3>Import progress</h3>
+  <p>Choose a previously exported JSON file. This replaces the current browser progress.</p>
+  <input type="file" id="importFile" accept=".json,application/json">
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
+    <button onclick="document.getElementById('importDialog').close()">Cancel</button>
+    <button class="primary" id="confirmImport">Import</button>
+  </div>
+</dialog>
+<div class="toast" id="toast">Copied</div>
+
+<script>
+const modules = [
+{
+ id:0, title:"Architecture & mental model", duration:"1.5–2 h",
+ goal:"Distinguish deterministic workflows from autonomous agents and decide exactly where LLM judgment belongs.",
+ topics:["workflow vs agent","prompt chaining","routing","parallelization","orchestrator-worker","evaluator-optimizer"],
+ resources:[
+  {title:"Anthropic (2026) — Scaling Managed Agents: Decoupling the brain from the hands", url:"https://www.anthropic.com/engineering/managed-agents", note:"PRIMARY. Current Anthropic architecture: session, harness, sandbox/tools, stable interfaces, MCP, and decoupling execution from orchestration."},
+  {title:"Claude Platform — Managed Agents overview", url:"https://platform.claude.com/docs/en/managed-agents/overview", note:"PRIMARY. Current product model: Agent + Environment + Session + Events; contrasts managed harnesses with custom agent loops."},
+  {title:"Anthropic (2025) — Effective context engineering for AI agents", url:"https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", note:"How to curate prompts, tools, MCP, external data, and history for long-running agents."},
+  {title:"Anthropic (2024) — Building Effective Agents", url:"https://www.anthropic.com/engineering/building-effective-agents", note:"SECONDARY / HISTORICAL. Still useful for workflow-pattern vocabulary, but Anthropic explicitly notes that much of the tooling landscape has changed."},
+  {title:"Anthropic cookbook — Agent patterns", url:"https://github.com/anthropics/claude-cookbooks/tree/main/patterns/agents", note:"Reference implementations for chaining, routing, parallelization, orchestrator-workers, and evaluator-optimizer."},
+  {title:"Anthropic cookbook — Claude Agent SDK recipes", url:"https://github.com/anthropics/claude-cookbooks/tree/main/claude_agent_sdk", note:"CURRENT FREE CODE BACKBONE: MCP, sessions, safety hooks, subagents, dynamic workflows, deployment, and production agent patterns."}
+ ],
+ lab:{
+  title:"Map the current system",
+  description:"Inventory your current analytics path and label each meaningful action as deterministic code (D), LLM judgment (L), tool/MCP capability (T), or Skill/domain expertise (S).",
+  deliverable:"architecture-v0.md",
+  checklist:["Current path is documented end to end","Every major action has a D/L/T/S owner","Decisions that should move out of the LLM are identified","Target architecture shows explicit workflow control","At least 3 failure/stop conditions are represented"],
+  rubric:["Correctly separates workflow control from model judgment","Identifies MCP as capability layer rather than outer orchestrator","Makes state/loop ownership explicit","Architecture is implementable, not just conceptual"]
+ }
+},
+{
+ id:1, title:"Core agent patterns from first principles", duration:"3–4 h",
+ goal:"Implement the five foundational patterns, then install them as reusable primitives in the course-long SQL harness.",
+ topics:["single-shot","ReAct/tool loop","planner-executor","reflection","verifier gates","stop conditions","execution traces"],
+ resources:[
+  {title:"DeepLearning.AI — AI Agents in LangGraph", url:"https://www.deeplearning.ai/courses/ai-agents-in-langgraph/", note:"Watch Build an Agent from Scratch and LangGraph Components. Focus on the model→action→observation loop before using LangGraph."},
+  {title:"Packt companion repo — 30 Agents Every AI Engineer Must Build", url:"https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build", note:"FREE companion code. Chapter 1 covers cognitive-loop and reactive/deliberative/hybrid patterns; Chapter 7 covers tool use, orchestration, and stateful workflows."},
+  {title:"Packt Chapter 7 companion — Tool Manipulation and Orchestration Agents", url:"https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter07/README.md", note:"Useful implementation reference: tool-using agent, chain-of-agents orchestrator, state-machine workflow, error handling, and HITL."},
+  {title:"Anthropic cookbook — Basic Workflows", url:"https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/basic_workflows.ipynb", note:"REQUIRED FREE CODE STUDY: minimal prompt chaining, routing, and parallelization before frameworks hide the control flow."}
+ ],
+ lab:{
+  title:"Implement the five core patterns",
+  description:"Complete five small reference implementations against the same Northstar Retail scenario: single-shot, ReAct, planner-executor, reflexive, and verifier-gated. Use no agent framework.",
+  deliverable:"labs/01-core-patterns/patterns.py + passing test_patterns.py",
+  checklist:["All five patterns implemented","Each pattern emits a structured execution trace","ReAct enforces a hard step budget","Planner and executor are separate interfaces","Reflection is capped at two revisions","Verifier blocks unsafe/invalid action before execution","All bundled tests pass"],
+  rubric:["Each implementation clearly demonstrates a different control-flow pattern","Model judgment and deterministic control are visibly separated","Verifier is independent from generator/actor","Trace makes model/tool/control transitions inspectable","Implementations remain small enough to understand without framework internals"]
+ }
+},
+{
+ id:2, title:"State, schemas & control flow", duration:"2–2.5 h",
+ goal:"Replace implicit conversational context with typed application state that can be inspected, checkpointed, and evaluated.",
+ topics:["TypedDict/Pydantic","reducers","state schemas","conditional edges","messages vs state"],
+ resources:[
+  {title:"LangChain Academy — Introduction to LangGraph", url:"https://academy.langchain.com/courses/intro-to-langgraph", note:"Do Simple Graph, Chain, Router, State Schema, State Reducers, Multiple Schemas."},
+  {title:"LangGraph Graph API", url:"https://docs.langchain.com/oss/python/langgraph/graph-api", note:"Reference for state, nodes, and edges."},
+  {title:"Packt — Chapter 2: The Agent Engineer's Toolkit (FREE CHAPTER)", url:"https://subscription.packtpub.com/book/data/9781806109012/2/ch02lvl1sec15/cloud-native-agent-development-platforms", note:"Packt currently labels Chapter 2 a free chapter. Use its framework/LangGraph discussion as a second viewpoint; the LangGraph docs remain authoritative for implementation."}
+ ],
+ lab:{
+  title:"Define AnalysisState",
+  description:"Create the typed state contract that the whole analytics workflow will share.",
+  deliverable:"state.py",
+  checklist:["Request, plan, tasks, results, datasets, findings, visualizations, critique, errors, and status are represented","Chat messages are not the sole state representation","State fields have clear ownership","Reducers/merge behavior are deliberate","State can be serialized"],
+  rubric:["State captures durable workflow facts rather than prompt text","Intermediate artifacts are inspectable","Schema supports parallel task results","Schema can evolve without rewriting every node"]
+ }
+},
+{
+ id:3, title:"Routing, parallelism & orchestration", duration:"2–3 h",
+ goal:"Build explicit graphs and apply them to SQL generation, verification, repair, and candidate fan-out/fan-in.",
+ topics:["routing","fan-out/fan-in","map-reduce","parallel nodes","orchestrator-worker"],
+ resources:[
+  {title:"LangGraph Complete Course — workflow patterns", url:"https://www.youtube.com/watch?v=DtW_Lc9hYoU", note:"Use sections on parallelization, routing, orchestrator-worker, generator-evaluator, memory, HITL."},
+  {title:"Anthropic — Orchestrator-workers notebook", url:"https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/orchestrator_workers.ipynb", note:"Minimal reference implementation."},
+  {title:"Anthropic Agent SDK — Dynamic Workflows", url:"https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/08_Dynamic_workflows.ipynb", note:"REQUIRED CURRENT CODE STUDY: subagents vs workflows, deterministic scripts, fan-out, pipelines, structured output, adversarial verification."}
+ ],
+ lab:{
+  title:"Build the analysis task graph",
+  description:"Turn one business question into several independent analysis tasks, execute eligible tasks in parallel, and synthesize findings.",
+  deliverable:"analysis_graph_v1.py",
+  checklist:["Planner output creates multiple executable tasks","Dependencies determine task readiness","Independent tasks can run concurrently","Fan-in waits for required upstream work","Synthesis sees structured findings, not raw transcripts"],
+  rubric:["Parallelism reflects true task independence","Routing logic lives in code where possible","Worker context is scoped to its task","Synthesis preserves provenance to worker results"]
+ }
+},
+{
+ id:4, title:"MCP, Skills & workflow boundaries", duration:"1–1.5 h",
+ goal:"Make the boundary between capabilities, expertise, context, and orchestration explicit.",
+ topics:["MCP host/client/server","tools","resources","prompts","Skills","adapter layer"],
+ resources:[
+  {title:"Hugging Face MCP — Architectural Components", url:"https://huggingface.co/learn/mcp-course/en/unit1/architectural-components", note:"Host owns orchestration; server exposes capabilities."},
+  {title:"Hugging Face MCP — Capabilities", url:"https://huggingface.co/learn/mcp-course/en/unit1/capabilities", note:"Tools, resources, prompts, sampling."},
+  {title:"Hugging Face MCP — Advanced / custom workflows", url:"https://huggingface.co/learn/mcp-course/en/unit3/introduction", note:"Skim for workflow-server design tradeoffs."},
+  {title:"Anthropic Agent SDK — Observability Agent", url:"https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/02_The_observability_agent.ipynb", note:"REQUIRED FREE CODE STUDY: real MCP integration and large external tool surfaces."},
+  {title:"Anthropic Agent SDK — Site Reliability Agent", url:"https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/03_The_site_reliability_agent.ipynb", note:"Study safety hooks and validation at the tool boundary before read/write actions."}
+ ],
+ lab:{
+  title:"Create the capability boundary map",
+  description:"Inventory existing MCP functions and Skills and decide what belongs in MCP, resources, Skills, or the workflow engine.",
+  deliverable:"capability-map.md",
+  checklist:["Every MCP capability has a clear contract","Skills contain expertise/policy rather than execution control","Retry and iteration limits live outside MCP tools","Context/resources are separated from actions","Workflow engine can swap tool implementations"],
+  rubric:["No capability layer secretly owns the outer loop","Tool schemas are narrow and testable","Skills are reusable across nodes","Boundary makes mocking/testing possible"]
+ }
+},
+{
+ id:5, title:"Planning & task decomposition", duration:"2 h",
+ goal:"Turn ambiguous business questions into structured, inspectable plans with dependencies and success criteria.",
+ topics:["structured planning","DAGs","dependencies","replanning","success criteria","plan validation"],
+ resources:[
+  {title:"Anthropic — Building Effective Agents", url:"https://www.anthropic.com/engineering/building-effective-agents", note:"Revisit orchestrator-workers and when dynamic decomposition helps."},
+  {title:"Anthropic cookbook — Orchestrator-workers", url:"https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/orchestrator_workers.ipynb", note:"Use as a pattern, not a final architecture."},
+  {title:"Anthropic Agent SDK — Chief of Staff Agent", url:"https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/01_The_chief_of_staff_agent.ipynb", note:"REQUIRED FREE CODE STUDY: Plan Mode, subagent orchestration, hooks, and persistent instructions."}
+ ],
+ lab:{
+  title:"Build a structured analytics planner",
+  description:"Planner returns an AnalysisPlan schema, not prose. Test it on at least 20 realistic business questions before executing any plan.",
+  deliverable:"planner.py + planner_eval_cases.json",
+  checklist:["Plan has objective and success criteria","Tasks have IDs and dependencies","Required capabilities are explicit","Parallelizable work is marked","Plan validator catches malformed or impossible plans"],
+  rubric:["Plans are specific enough to execute","Dependencies are sensible","Planner avoids unnecessary tasks","Success criteria describe evidence needed to answer the question"]
+ }
+},
+{
+ id:6, title:"Evaluator–optimizer loops", duration:"2–2.5 h",
+ goal:"Build bounded, rubric-driven critique/revision loops that improve analysis and visualization quality.",
+ topics:["reflection","rubrics","critics","revision","accept/reject","bounded loops"],
+ resources:[
+  {title:"Anthropic — Evaluator-optimizer notebook", url:"https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/evaluator_optimizer.ipynb", note:"Core generate → evaluate → revise pattern."},
+  {title:"Andrew Ng — Reflection design pattern", url:"https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-2-reflection/", note:"Conceptual treatment of automated feedback and refinement."},
+  {title:"LangGraph workflow-pattern video", url:"https://www.youtube.com/watch?v=DtW_Lc9hYoU", note:"Generator-evaluator section."},
+  {title:"Anthropic Agent SDK — Dynamic Workflows verification", url:"https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/08_Dynamic_workflows.ipynb", note:"REQUIRED FREE CODE STUDY: fan-out verification with adversarial/skeptic checking; compare verifier gates with reflective critics."}
+ ],
+ lab:{
+  title:"Build two critics",
+  description:"Implement separate visualization and analysis critics with structured rubrics and a maximum of 2–3 revision cycles.",
+  deliverable:"critics.py + revision_loop.py",
+  checklist:["Critique is structured, not free-form","Visualization and analysis use different rubrics","Pass/fail decision is deterministic from rubric output","Revision instructions are actionable","Maximum revision count is enforced"],
+  rubric:["Critic criteria are domain-specific","Loop measurably improves artifacts","No infinite self-reflection","Critic can request new evidence when the problem is missing data rather than wording"]
+ }
+},
+{
+ id:7, title:"Text-to-SQL vertical slice & analytics patterns", duration:"2–3 h",
+ goal:"Connect planning, data retrieval, analysis, visualization, and evidence tracking into a real vertical slice.",
+ topics:["SQL agents","tool selection","Python analysis","charts","provenance","convergence"],
+ resources:[
+  {title:"Arize Phoenix — Evaluate a Talk-to-Your-Data Agent", url:"https://arize.com/docs/phoenix/cookbook/evaluation/evaluate-an-agent", note:"Directly relevant SQL + Python + visualization + path evaluation example."},
+  {title:"DeepLearning.AI — Practical Multi AI Agents with CrewAI", url:"https://www.deeplearning.ai/courses/practical-multi-ai-agents-and-advanced-use-cases-with-crewai/", note:"Use the data insight analysis lesson selectively."},
+  {title:"Anthropic cookbook — Text-to-SQL with Claude", url:"https://github.com/anthropics/claude-cookbooks/tree/main/capabilities/text_to_sql", note:"REQUIRED FREE BACKBONE for the through-project: SQL generation, context/RAG, self-improvement ideas, data, and evaluations."},
+  {title:"Anthropic Text-to-SQL — guide notebook", url:"https://github.com/anthropics/claude-cookbooks/blob/main/capabilities/text_to_sql/guide.ipynb", note:"Study the implementation, then rebuild its useful ideas behind our typed/verifier-gated harness."}
+ ],
+ lab:{
+  title:"First end-to-end analytics vertical slice",
+  description:"Connect the workflow graph to the real MCP server: question → plan → metadata/data → analysis → visualization → critique → revision → narrative.",
+  deliverable:"vertical_slice_v1/",
+  checklist:["Real MCP server is used","Every factual claim can be traced to retrieved data","Visualization is generated from the same evidence set","Critique loop is active","Final output includes provenance/debug trace"],
+  rubric:["Workflow answers a real business question end to end","Tool failures degrade gracefully","Claims and charts stay grounded in source data","Intermediate state is inspectable"]
+ }
+},
+{
+ id:8, title:"Persistence, retries & human intervention", duration:"2 h",
+ goal:"Make long-running workflows resumable and safe when tools fail, ambiguity appears, or a human decision is appropriate.",
+ topics:["checkpointing","retry policies","interrupts","HITL","idempotence","resume"],
+ resources:[
+  {title:"LangGraph — Persistence", url:"https://docs.langchain.com/oss/python/langgraph/persistence", note:"Checkpointing and resumability."},
+  {title:"LangGraph — Human in the loop", url:"https://docs.langchain.com/oss/python/langchain/human-in-the-loop", note:"Interrupt, approve/edit/reject, resume."},
+  {title:"LangChain Academy — Introduction to LangGraph", url:"https://academy.langchain.com/courses/intro-to-langgraph", note:"Breakpoints, state editing, time travel, subgraphs."},
+  {title:"Anthropic Agent SDK — Building a Session Browser", url:"https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/05_Building_a_session_browser.ipynb", note:"REQUIRED FREE CODE STUDY: durable session listing, replay, fork, and resume concepts."}
+ ],
+ lab:{
+  title:"Make the workflow durable",
+  description:"Prove the graph can retry transient failures, pause for user input, resume after a crash, and branch back when critique requires new data.",
+  deliverable:"durability_tests.py",
+  checklist:["Transient MCP errors retry with limits","Ambiguous requests can interrupt for user input","Workflow resumes from checkpoint","Completed idempotent work is not repeated unnecessarily","Max retry budget produces a clean terminal state"],
+  rubric:["Failure semantics are explicit","Resume behavior preserves state integrity","Human intervention occurs only at useful boundaries","Retry policy distinguishes transient vs logical failures"]
+ }
+},
+{
+ id:9, title:"Multi-agent vs workflow", duration:"1.5–2 h",
+ goal:"Learn CrewAI and multi-agent collaboration late enough to judge when it actually improves the system.",
+ topics:["CrewAI Flows","Crews","specialists","delegation","hybrid deterministic/autonomous systems"],
+ resources:[
+  {title:"CrewAI documentation", url:"https://docs.crewai.com/", note:"Focus on Flows vs Crews and how stateful control combines with autonomous collaboration."},
+  {title:"DeepLearning.AI — Multi AI Agent Systems with crewAI", url:"https://www.deeplearning.ai/courses/multi-ai-agent-systems-with-crewai/", note:"Watch collaboration and financial-analysis examples selectively."}
+ ],
+ lab:{
+  title:"Rebuild one branch as a Crew",
+  description:"Replace a bounded portion of the LangGraph workflow with a CrewAI Crew/Flow and compare quality, control, traceability, latency, and cost.",
+  deliverable:"framework-comparison.md",
+  checklist:["Same test cases run through both implementations","Quality differences are recorded","Latency/token/cost are compared","Traceability is compared","Decision to keep or remove multi-agent layer is justified"],
+  rubric:["Comparison is empirical rather than aesthetic","Multi-agent is kept only where autonomy adds value","State/control boundaries stay explicit","Framework choice does not lock MCP capabilities to one orchestrator"]
+ }
+},
+{
+ id:10, title:"Evals & observability", duration:"2.5–3 h",
+ goal:"Measure planning, tool use, trajectories, analytical correctness, visualization quality, and final business usefulness.",
+ topics:["tracing","trajectory evals","LLM-as-judge","deterministic graders","datasets","regression tests"],
+ resources:[
+  {title:"DeepLearning.AI — Evaluating AI Agents", url:"https://www.deeplearning.ai/courses/evaluating-ai-agents/", note:"Tracing, router/skill evals, trajectory evals, LLM-as-judge, experiments."},
+  {title:"Anthropic — Demystifying evals for AI agents", url:"https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents", note:"Capability vs regression evals; deterministic, model-based, and human graders."},
+  {title:"LangSmith — Trajectory evaluations", url:"https://docs.langchain.com/langsmith/trajectory-evals", note:"Exact/subset/superset matching and trajectory judges."},
+  {title:"Arize Phoenix — Talk-to-Your-Data evaluation", url:"https://arize.com/docs/phoenix/cookbook/evaluation/evaluate-an-agent", note:"Practical agent path and convergence evaluation."},
+  {title:"Anthropic Text-to-SQL — Promptfoo evaluation suite", url:"https://github.com/anthropics/claude-cookbooks/tree/main/capabilities/text_to_sql/evaluation", note:"REQUIRED FREE CODE STUDY: real test cases, expected outputs, providers, and reproducible eval configuration."},
+  {title:"Anthropic cookbook — Agentic Search benchmark", url:"https://github.com/anthropics/claude-cookbooks/blob/main/evals/agentic_search/reproduce_agentic_search_benchmarks.ipynb", note:"Study how Anthropic packages benchmark reproduction; adapt the discipline, not the search task itself."}
+ ],
+ lab:{
+  title:"Build the analytics benchmark",
+  description:"Create an initial 25-question eval set and score planning, tool choice, SQL, findings, charts, grounding, convergence, latency, and cost.",
+  deliverable:"evals/",
+  checklist:["At least 25 realistic questions","Expected evidence/facts are defined","Forbidden claims or failure modes are represented","Node-level and outcome-level evals both exist","Results can be rerun after architecture/prompt changes"],
+  rubric:["Eval set contains hard/ambiguous/failure cases","Metrics expose regressions, not just average quality","Trajectory grading allows multiple valid paths where appropriate","At least some graders are deterministic"]
+ }
+},
+{
+ id:11, title:"Production engineering & safe self-improvement", duration:"3–4 h",
+ goal:"Harden the SQL harness, then add a versioned champion/challenger improvement loop that can propose changes but cannot bypass safety, correctness, approval, or rollback gates.",
+ topics:["timeouts","idempotency","security","budgets","model routing","failure clustering","champion/challenger","promotion gates","rollback"],
+ resources:[
+  {title:"Anthropic — Building Effective Agents", url:"https://www.anthropic.com/engineering/building-effective-agents", note:"Revisit simplicity and reliability guidance."},
+  {title:"Anthropic — Building trustworthy agents", url:"https://www.anthropic.com/research/trustworthy-agents", note:"Security, user control, transparency, and trust considerations."},
+  {title:"Anthropic Agent SDK — Site Reliability Agent", url:"https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/03_The_site_reliability_agent.ipynb", note:"REQUIRED FREE CODE STUDY: safety hooks, write validation, remediation boundaries."},
+  {title:"Anthropic Agent SDK — Hosting Your Agent", url:"https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/07_Hosting_the_agent.ipynb", note:"REQUIRED FREE CODE STUDY: same agent interface across Docker, managed serverless, and Kubernetes maturity tiers."}
+ ],
+ lab:{
+  title:"Chaos-test + build the champion/challenger loop",
+  description:"First prove the harness fails safely under hostile conditions; then use recorded failures to propose, evaluate, promote/reject, version, and roll back controlled configuration improvements.",
+  deliverable:"production-readiness.md + project/sql_harness/improvement.py",
+  checklist:["Timeout/retry and MCP outage tested","Prompt-injection and malformed output tested","Budget exhaustion tested","Config versions are immutable","One bad challenger is rejected by an eval gate","One eligible challenger can be promoted only after approval","Rollback restores prior champion exactly"],
+  rubric:["Failure states are safe and diagnosable","Improvement proposals are evidence-driven and restricted to declared configuration surfaces","Hard safety/correctness gates outrank average quality","Promotion is auditable and reversible"]
+ }
+},
+{
+ id:12, title:"Capstone — Self-improving SQL agentic harness", duration:"5+ h",
+ goal:"Demonstrate the complete SQL harness against the frozen baseline and execute one full, eval-gated champion/challenger improvement cycle.",
+ topics:["integration","benchmarking","documentation","architecture review","demo"],
+ resources:[
+  {title:"Course architecture reference — Anthropic", url:"https://www.anthropic.com/engineering/building-effective-agents", note:"Use as a final sanity check: complexity should be earned."},
+  {title:"LangGraph documentation", url:"https://docs.langchain.com/oss/python/langgraph/overview", note:"Reference during final integration."}
+ ],
+ lab:{
+  title:"Build and defend the final system",
+  description:"Run the original and final implementations against the same benchmark, document the architecture, and present the tradeoffs.",
+  deliverable:"capstone/",
+  checklist:["Explicit state and outer-loop control","MCP/Skills boundaries are documented","Planner and critics use schemas","Workflow is resumable","Eval suite runs automatically","Baseline vs final comparison is documented","Known failure modes and next improvements are listed"],
+  rubric:["Final design is simpler than necessary alternatives","Quality/reliability improvement is demonstrated with evals","System can explain how a result was produced","Architecture supports future tool/model replacement"]
+ }
+}
+];
+
+
+const anthropicCookbookStudy = {
+  0:{title:"Current Anthropic code map", items:[
+    ["Claude Agent SDK recipes","https://github.com/anthropics/claude-cookbooks/tree/main/claude_agent_sdk","Scan the README. Identify the recipes for MCP, sessions, dynamic workflows, safety hooks, and hosting. Write down which later modules they map to."],
+    ["Legacy/minimal agent patterns","https://github.com/anthropics/claude-cookbooks/tree/main/patterns/agents","Treat these as minimal pattern implementations, not the current full harness architecture."]]},
+  1:{title:"Minimal patterns in code", items:[
+    ["Basic Workflows","https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/basic_workflows.ipynb","Locate chaining, routing, and parallelization. For each, mark what code owns versus what the model chooses."],
+    ["Evaluator-Optimizer","https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/evaluator_optimizer.ipynb","Preview the bounded revision pattern; we will formalize critic vs verifier in Module 6."]]},
+  3:{title:"Modern orchestration: who holds the plan?", items:[
+    ["Dynamic Workflows","https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/08_Dynamic_workflows.ipynb","Required. Compare a plan held in model context with a deterministic workflow script. Inspect agent(), parallel(), pipeline(), structured outputs, and adversarial verification."]]},
+  4:{title:"MCP and action-boundary examples", items:[
+    ["Observability Agent","https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/02_The_observability_agent.ipynb","Required. Trace MCP tool registration, external-system boundaries, and how the agent sees a large tool surface."],
+    ["Site Reliability Agent","https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/03_The_site_reliability_agent.ipynb","Inspect PreToolUse safety hooks. Identify which checks belong at the tool boundary even if an upstream verifier already exists."]]},
+  5:{title:"Planning with bounded execution", items:[
+    ["Chief of Staff Agent","https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/01_The_chief_of_staff_agent.ipynb","Required. Inspect Plan Mode, specialized subagents, hooks, and persistent instructions. Separate planning artifacts from execution authority."],
+    ["Orchestrator-Workers","https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/orchestrator_workers.ipynb","Compare the smaller pattern implementation with the newer SDK recipe."]]},
+  6:{title:"Critics, verifiers, and adversarial checking", items:[
+    ["Evaluator-Optimizer","https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/evaluator_optimizer.ipynb","Required. Identify the feedback object, exit condition, and loop budget."],
+    ["Dynamic Workflows","https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/08_Dynamic_workflows.ipynb","Required. Inspect the parallel verifier + skeptic pattern and contrast hard verification with quality critique."]]},
+  7:{title:"Anthropic Text-to-SQL backbone", items:[
+    ["Text-to-SQL guide","https://github.com/anthropics/claude-cookbooks/blob/main/capabilities/text_to_sql/guide.ipynb","Required. Trace natural-language request → schema/context → SQL generation → iterative improvement. Record what you would retain and what our verifier-gated harness must strengthen."],
+    ["Text-to-SQL directory","https://github.com/anthropics/claude-cookbooks/tree/main/capabilities/text_to_sql","Inspect its data and evaluation layout so our through-project uses reproducible cases rather than ad-hoc demos."]]},
+  8:{title:"Sessions as inspectable state", items:[
+    ["Building a Session Browser","https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/05_Building_a_session_browser.ipynb","Required. Inspect listing, replay, fork, and resume. Translate those concepts into SQL-harness run/session inspection without coupling to Claude-specific storage."]]},
+  10:{title:"Evaluation code, not just evaluation prose", items:[
+    ["Text-to-SQL Promptfoo suite","https://github.com/anthropics/claude-cookbooks/tree/main/capabilities/text_to_sql/evaluation","Required. Inspect prompts/providers/tests/expected outputs. Our benchmark must compare canonical results and safety invariants, not only model text."],
+    ["Agentic Search benchmark reproduction","https://github.com/anthropics/claude-cookbooks/blob/main/evals/agentic_search/reproduce_agentic_search_benchmarks.ipynb","Inspect how a benchmark is made reproducible; adapt the experimental discipline, not the search task."]]},
+  11:{title:"Production safety and deployment", items:[
+    ["Site Reliability Agent","https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/03_The_site_reliability_agent.ipynb","Required. Revisit safety hooks, write boundaries, and end-to-end verify-after-action behavior."],
+    ["Hosting Your Agent","https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/07_Hosting_the_agent.ipynb","Required. Compare operational maturity tiers while preserving one portable agent interface."],
+    ["Scheduled Repository Reviewer","https://github.com/anthropics/claude-cookbooks/tree/main/claude_agent_sdk/scheduled_repository_reviewer","Optional but useful: bounded unattended runs, budgets, resumable sessions, and schema-validated continuity."]]},
+  12:{title:"Final architecture cross-check", items:[
+    ["Dynamic Workflows","https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/08_Dynamic_workflows.ipynb","Use the subagent-vs-script distinction as a final audit: every autonomous region of the SQL harness should have a reason to be autonomous."],
+    ["Text-to-SQL","https://github.com/anthropics/claude-cookbooks/tree/main/capabilities/text_to_sql","Compare our final benchmark, verification, and improvement loop with the free reference implementation and eval layout."]]}
+};
+
+const throughProject = {
+  0:{title:"Freeze the baseline", build:"Run the 12 starter benchmark cases through the current 'LLM does everything' approach. Freeze prompt/model/configuration and record failures before adding any safeguards.", files:["project/00-baseline.md","project/benchmark/baseline_cases.jsonl","baseline/BASELINE.md"], gate:"No cherry-picking; unsafe and ambiguous cases remain in the baseline."},
+  1:{title:"Install five pattern primitives", build:"Implement single-shot routing, ReAct, planner/executor, reflexive repair, and verifier-gating as reusable SQL-harness primitives using fake tools.", files:["project/sql_harness/patterns.py","project/tests/test_patterns.py"], gate:"Write SQL fixtures can never reach the fake executor."},
+  2:{title:"Create the harness state contract", build:"Make SQL attempts, verification records, results/evidence, claims, metrics, and configuration versions first-class typed artifacts.", files:["project/sql_harness/models.py","project/tests/test_models.py"], gate:"Settled claims without evidence and invalid attempt numbers fail validation."},
+  3:{title:"Build the explicit SQL graph", build:"Implement request → route → context → generate → verify → execute → verify result → finalize, with clarification, bounded repair, and a 2-candidate fan-out experiment.", files:["project/sql_harness/graph.py"], gate:"The execution node must be unreachable unless SQL verification passes."},
+  4:{title:"Make the hands replaceable", build:"Put schema discovery and SQL execution behind adapters. Implement SQLite now and MCP with the same contract.", files:["project/sql_harness/adapters/"], gate:"Switching SQLite↔MCP changes configuration, not graph code."},
+  5:{title:"Add structured analytical planning", build:"Bypass planning for simple lookups; create typed dependency plans for comparisons/diagnostics; ask for clarification on vague requests.", files:["project/sql_harness/planner.py"], gate:"Malformed planner output never silently becomes executable work."},
+  6:{title:"Add verifier-gated repair", build:"Implement pre-exec SQL verification, result checks, and evidence/claim verification. Feed structured failures to a maximum-two-repair loop.", files:["project/sql_harness/verification.py"], gate:"A critic can suggest improvements but cannot override a hard verifier rejection."},
+  7:{title:"Run the first complete harness", build:"Execute the fixed Northstar diagnostic question end-to-end, then swap only the capability adapter and run an analogous known-answer MCP question.", files:["runs/northstar/","runs/mcp/"], gate:"Every settled numeric claim is evidence-backed and verified."},
+  8:{title:"Make runs durable", build:"Checkpoint state, resume without duplicate execution, interrupt for clarification, and inspect session history without invoking the model.", files:["project/sql_harness/persistence.py"], gate:"Crash-after-execute then resume produces zero duplicate SQL executions."},
+  9:{title:"Test whether multi-agent helps", build:"Rebuild only generator+verifier using CrewAI and compare it with the existing control-plane implementation on the same cases.", files:["project/multi_agent_decision.md"], gate:"Keep multi-agent only if measurements justify it."},
+  10:{title:"Freeze the regression suite", build:"Expand to ≥25 cases and add deterministic safety, result-equivalence, grounding, and selected trajectory graders.", files:["project/benchmark/","project/sql_harness/evals.py"], gate:"A deliberately introduced regression must cause the suite to fail."},
+  11:{title:"Build safe self-improvement", build:"Cluster failures, propose config-only changes, require approval, benchmark challengers, promote/reject with hard gates, and support rollback.", files:["project/sql_harness/improvement.py","project/config_versions/"], gate:"Champion config is immutable; any safety/hard-correctness regression blocks promotion."},
+  12:{title:"Capstone: baseline vs final + one improvement cycle", build:"Run the frozen baseline and final harness on the same benchmark, then execute one real champion/challenger improvement experiment.", files:["capstone/","project/champion_history.json"], gate:"Demonstrate trustworthy improvement through evaluation and promotion gates, not architectural complexity alone."}
+};
+
+const bookStudy = {
+  0:{optionalPages:"Ch. 1 pp. 4–19", optionalSections:"Architecture of agents; cognitive loop; interoperability protocols; MCP/A2A; lifecycle", optionalNote:"Optional vocabulary/background. Current Anthropic Managed Agents remains the primary harness architecture.", free:[
+    ["Anthropic — Scaling Managed Agents","https://www.anthropic.com/engineering/managed-agents","Current harness/session/tools model."],
+    ["Anthropic — Effective context engineering","https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents","Context, tools, MCP, and history as curated runtime context."],
+    ["Anthropic — Building Effective Agents","https://www.anthropic.com/engineering/building-effective-agents","Older but still useful workflow-pattern vocabulary."]]},
+  1:{optionalPages:"Ch. 5 pp. 118–135 + Ch. 7 pp. 174–186", optionalSections:"Decision loop, task DAGs, Planning Agent, Tool-Using Agent, Think/Plan/Act", optionalNote:"Optional prose deep dive; all required pattern learning is covered by the free course/video and public companion code.", free:[
+    ["DeepLearning.AI — Build an Agent from Scratch","https://www.deeplearning.ai/courses/ai-agents-in-langgraph/","Required conceptual implementation of the model→tool→observation loop."],
+    ["Public Packt Ch. 5 companion code","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter05/ch05_foundational_architectures__RUN_NO_KEY_SIMULATION.ipynb","Required code archaeology for task DAGs/planning."],
+    ["Public Packt Ch. 7 companion code","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter07/ch07_tool_orchestration__RUN_NO_KEY_SIMULATION.ipynb","Required code archaeology for tool loops and orchestration."]]},
+  2:{optionalPages:"Ch. 5 pp. 135–144", optionalSections:"Working, episodic, and semantic memory", optionalNote:"Optional memory deep dive. Durable workflow-state concepts are fully covered by the free LangGraph material.", free:[
+    ["Packt Chapter 2 — FREE CHAPTER","https://subscription.packtpub.com/book/data/9781806109012/2/ch02lvl1sec15/cloud-native-agent-development-platforms","Packt currently marks Chapter 2 as free; use its framework/LangGraph discussion as a second viewpoint."],
+    ["LangChain Academy — Introduction to LangGraph","https://academy.langchain.com/courses/intro-to-langgraph","Required state schemas, reducers, and multiple schemas."],
+    ["LangGraph Graph API","https://docs.langchain.com/oss/python/langgraph/graph-api","Required authoritative state/node/edge reference."]]},
+  3:{optionalPages:"Ch. 7 pp. 186–200", optionalSections:"Chain-of-agents, conflict resolution, workflow/HITL, state-machine guards", optionalNote:"Optional prose. Public Ch. 7 code plus LangGraph/Anthropic sources cover the assignment completely.", free:[
+    ["LangGraph workflow-pattern course","https://www.youtube.com/watch?v=DtW_Lc9hYoU","Required routing, parallelization, orchestrator-worker, generator-evaluator sections."],
+    ["Anthropic orchestrator-workers notebook","https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/orchestrator_workers.ipynb","Required minimal pattern reference."],
+    ["Public Packt Ch. 7 companion code","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter07/ch07_tool_orchestration__RUN_NO_KEY_SIMULATION.ipynb","Required manager, aggregation, guard, and HITL code archaeology."]]},
+  4:{optionalPages:"Ch. 1 pp. 15–19 + Ch. 7 pp. 174–185", optionalSections:"MCP/A2A; tool registry, discovery/selection, error handling", optionalNote:"Optional prose. Hugging Face MCP plus the public Ch. 7 implementation fully cover the boundary lesson.", free:[
+    ["Hugging Face MCP — Architectural Components","https://huggingface.co/learn/mcp-course/en/unit1/architectural-components","Required host/client/server responsibility model."],
+    ["Hugging Face MCP — Capabilities","https://huggingface.co/learn/mcp-course/en/unit1/capabilities","Required tools/resources/prompts capability distinctions."],
+    ["Public Packt Ch. 7 companion code","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter07/ch07_tool_orchestration__RUN_NO_KEY_SIMULATION.ipynb","Required tool registry/selection/error-handling code archaeology."]]},
+  5:{optionalPages:"Ch. 5 pp. 131–137", optionalSections:"Planning Agent; hierarchical decomposition; dependency-aware execution; monitoring", optionalNote:"Optional prose deep dive. Planning and validation requirements are covered by Anthropic plus the public Packt code.", free:[
+    ["Anthropic orchestrator-workers pattern","https://www.anthropic.com/engineering/building-effective-agents","Required dynamic decomposition concept."],
+    ["Public Packt Ch. 5 companion code","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter05/ch05_foundational_architectures__RUN_NO_KEY_SIMULATION.ipynb","Required Planning Agent/task-DAG code archaeology."],
+    ["Public Packt Ch. 9 provider comparison","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter09/LLM_COMPARISON.md","Required real structured-output failure case."]]},
+  6:{optionalPages:"Ch. 8 pp. 211–215, 231–232; Ch. 9 pp. 265–277 selective", optionalSections:"Verification & Validation; conflicting evidence; Tri-Agent Pipeline; self-improvement safeguards", optionalNote:"Optional prose. Critic, verifier, escalation, and revision concepts are all available in free sources/public code.", free:[
+    ["Anthropic evaluator-optimizer notebook","https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/evaluator_optimizer.ipynb","Required bounded generate→evaluate→revise pattern."],
+    ["Andrew Ng — Reflection design pattern","https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-2-reflection/","Required reflection concept."],
+    ["Public Packt Ch. 8 companion code","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter08/ch08_data_analysis_reasoning_agents__RUN_NO_KEY_SIMULATION.ipynb","Required V&V / Tri-Agent code archaeology."],
+    ["Public Packt Ch. 9 self_improving.py","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter09/self_improving.py","Required safeguard/control-loop comparison."]]},
+  7:{optionalPages:"Ch. 8 pp. 204–232", optionalSections:"Data Analysis Agent; visualization; statistics; V&V; conflicting evidence; Tri-Agent Pipeline", optionalNote:"Optional prose. This chapter is highly relevant, but the lab is fully supported by Phoenix and the public Ch. 8 implementation.", free:[
+    ["Arize Phoenix — Talk-to-Your-Data Agent","https://arize.com/docs/phoenix/cookbook/evaluation/evaluate-an-agent","Required analytics-agent/evaluation walkthrough."],
+    ["Public Packt Ch. 8 README","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter08/README.md","Required section map and architecture overview."],
+    ["Public Packt Ch. 8 simulation notebook","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter08/ch08_data_analysis_reasoning_agents__RUN_NO_KEY_SIMULATION.ipynb","Required analytics/V&V code archaeology."]]},
+  8:{optionalPages:"Ch. 7 pp. 195–200", optionalSections:"Long-running workflow; HITL; state transitions and guards", optionalNote:"Optional prose. LangGraph persistence/HITL docs plus the public Ch. 7 code cover the lab.", free:[
+    ["LangGraph — Persistence","https://docs.langchain.com/oss/python/langgraph/persistence","Required checkpoint/resume mechanics."],
+    ["LangGraph — Human in the loop","https://docs.langchain.com/oss/python/langchain/human-in-the-loop","Required interrupt/approve/edit/reject model."],
+    ["Public Packt Ch. 7 companion code","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter07/ch07_tool_orchestration__RUN_NO_KEY_SIMULATION.ipynb","Required guard/HITL code archaeology."]]},
+  9:{optionalPages:"Ch. 7 pp. 186–195", optionalSections:"Manager/specialists; shared memory; conflict detection/resolution", optionalNote:"Optional prose. CrewAI's free material plus public Ch. 7 code are the required comparison sources.", free:[
+    ["CrewAI documentation","https://docs.crewai.com/","Required Flows vs Crews architecture."],
+    ["DeepLearning.AI — Multi AI Agent Systems with crewAI","https://www.deeplearning.ai/courses/multi-ai-agent-systems-with-crewai/","Required selective collaboration examples."],
+    ["Public Packt Ch. 7 companion code","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter07/ch07_tool_orchestration__RUN_NO_KEY_SIMULATION.ipynb","Required manager/shared-memory/conflict code archaeology."]]},
+ 10:{optionalPages:"Ch. 9 pp. 265–277", optionalSections:"Sensing → Critic → Planner → Learning; HITL; rollback/versioning", optionalNote:"Optional prose. The evaluation course, Anthropic eval guidance, and public Ch. 9 files cover the assignment.", free:[
+    ["DeepLearning.AI — Evaluating AI Agents","https://www.deeplearning.ai/courses/evaluating-ai-agents/","Required tracing, trajectory, grader, and experiment concepts."],
+    ["Anthropic — Demystifying evals for AI agents","https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents","Required capability/regression and mixed-grader guidance."],
+    ["Public Packt Ch. 9 self_improving.py","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter09/self_improving.py","Required change-proposal loop archaeology."],
+    ["Public Packt Ch. 9 LLM_COMPARISON.md","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter09/LLM_COMPARISON.md","Required failure-to-regression-test example."]]},
+ 11:{optionalPages:"Ch. 4 pp. 93–115 + Ch. 9 pp. 275–277", optionalSections:"Scaling, cost, security, defense-in-depth; human validation; immutable versions/rollback", optionalNote:"Optional production checklist reading. Required concepts are covered by Anthropic plus the public code artifacts and the chaos lab itself.", free:[
+    ["Anthropic — Building trustworthy agents","https://www.anthropic.com/research/trustworthy-agents","Required security, user control, transparency, and trust framing."],
+    ["Anthropic — Building Effective Agents","https://www.anthropic.com/engineering/building-effective-agents","Required simplicity/reliability framing."],
+    ["Public Packt Ch. 9 self_improving.py","https://github.com/PacktPublishing/30-Agents-Every-AI-Engineer-Must-Build/blob/main/chapter09/self_improving.py","Required HITL/change-control comparison."]]},
+ 12:{optionalPages:"Revisit Ch. 5, 7, 8, 9 selectively", optionalSections:"Planning, orchestration, analytics/V&V, promotion/rollback", optionalNote:"Optional synthesis reading only. The capstone must be defensible using the course's free sources and your own eval evidence.", free:[
+    ["Course free-source trail","book-map.html","Required: use the free-source mapping and your SOURCE_NOTES from Modules 1–11."],
+    ["Anthropic — Building Effective Agents","https://www.anthropic.com/engineering/building-effective-agents","Final complexity sanity check."],
+    ["LangGraph documentation","https://docs.langchain.com/oss/python/langgraph/overview","Final orchestration reference."]]}
+};
+
+const assignments = {
+  "1": {
+    "title": "Pattern Atlas Programming Lab",
+    "objective": "Implement five distinct agent control-flow patterns against one fixed analytics scenario so you can recognize what a framework is doing later.",
+    "sourceStudy": [
+          "FREE REQUIRED: In the public Ch. 5 simulation notebook, locate task DAG/dependency handling and record which readiness/termination decisions are code-owned. Use the public Ch. 5 README section map if needed.",
+          "In the Ch. 7 notebook, trace data_viz_agent as Think → Plan → Act → data_state. Label each transition M (model), C (control code), or T (tool).",
+          "Before coding, predict how the execution traces of all five patterns should differ. After tests pass, revise the table using actual traces."
+    ],
+    "tasks": [
+      "1A — Single-shot router: implement single_shot_route(request, model). It must make exactly one model call, make zero tool calls, and return one of lookup | analysis | visualization | unsupported plus a short rationale.",
+      "1B — ReAct/tool loop: implement react_agent(goal, model, tools, max_steps=4). Each iteration must record action, tool input, observation, and step number. Unknown tools become an error observation rather than an exception. Stop on a final response or at step 4.",
+      "1C — Planner–executor: implement planner_executor(goal, planner, executors). The planner must emit structured tasks with IDs and dependencies. The executor must not execute a task until dependencies are complete. Planning and execution are separate callables.",
+      "1D — Reflexive agent: implement reflexive_agent(request, generator, critic, max_revisions=2). The critic returns {verdict, issues, required_changes}; revision receives the previous artifact plus that critique. No more than two revisions.",
+      "1E — Verifier-gated agent: implement verifier_gated(proposal, verifier, tools). The verifier runs BEFORE the action. A rejected proposal must result in zero tool executions; an approved proposal may execute exactly once."
+    ],
+    "fixed": [
+      "Use the bundled Northstar Retail SQLite database and mock tools. Do not connect to xFalcon/MCP yet.",
+      "ReAct goal: ‘Which region had the largest decline in gross profit from Q1 to Q2, and by how much?’",
+      "Planner–executor goal: ‘Explain why gross margin declined from Q1 to Q2.’",
+      "Reflection fixture: a draft executive summary containing one unsupported causal claim.",
+      "Verifier cases: SELECT-only analytics query must pass; DELETE/UPDATE or a query without a row limit must fail."
+    ],
+    "constraints": [
+      "Python 3.11+",
+      "No LangChain, LangGraph, CrewAI, AutoGen, or other agent framework",
+      "No hidden recursive calls",
+      "All loop budgets are constants/arguments owned by code, not chosen by the model",
+      "Every pattern returns an execution trace"
+    ],
+    "acceptance": [
+      "test_single_shot_calls_model_once passes",
+      "test_react_executes_tools_and_stops passes",
+      "test_react_hard_stops_at_four_steps passes",
+      "test_planner_respects_dependencies passes",
+      "test_reflexive_never_exceeds_two_revisions passes",
+      "test_verifier_prevents_rejected_tool_call passes",
+      "test_verifier_allows_approved_tool_call_once passes"
+    ],
+    "deliverables": [
+      "patterns.py",
+      "test_patterns.py (do not modify the supplied assertions except to add tests)",
+      "trace_examples.json containing one successful trace for each pattern",
+      "PATTERN_NOTES.md: 1–2 sentences on when you would and would not use each pattern"
+    ],
+    "starter": "labs/01-core-patterns/assignment.md"
+  },
+  "2": {
+    "title": "Typed State Contract Lab",
+    "objective": "Turn conversation-like implicit state into an explicit, serializable contract with deterministic merge behavior.",
+    "sourceStudy": [
+          "FREE REQUIRED: Review LangGraph state schemas/reducers, then inspect the public Ch. 5 memory section. Make a table for working, episodic, semantic, and durable workflow state and explain the differences.",
+          "Inspect the Ch. 9 AgentState model and identify which fields are durable artifacts versus accumulated messages/context.",
+          "Write one paragraph explaining what should survive a process restart in our analytics workflow and what can be reconstructed."
+    ],
+    "tasks": [
+      "Define TaskStatus and WorkflowStatus enums.",
+      "Implement Pydantic models UserRequest, AnalysisTask, TaskResult, Finding, VisualizationArtifact, Critique, and AnalysisState using the required fields in the starter.",
+      "Implement merge_task_results(existing, incoming): preserve first-seen task order; replace duplicates by task_id with the newest result; do not duplicate results.",
+      "Implement state_to_json and state_from_json and prove a round trip reproduces the same semantic state.",
+      "Add validation: Finding must reference at least one evidence_id; AnalysisTask cannot depend on itself."
+    ],
+    "fixed": [
+      "Use the supplied two-worker merge fixture.",
+      "Do not store the entire application as messages: messages may exist, but the required workflow artifacts must be first-class fields."
+    ],
+    "constraints": [
+      "Pydantic v2 or dataclasses + explicit validation",
+      "No LangGraph in this lab",
+      "Reducer behavior must be deterministic"
+    ],
+    "acceptance": [
+      "Round-trip serialization test passes",
+      "Duplicate TaskResult replaces rather than appends",
+      "Parallel merge order is deterministic",
+      "Finding without evidence is rejected",
+      "Self-dependent task is rejected"
+    ],
+    "deliverables": [
+      "state_models.py",
+      "test_state_models.py",
+      "state-example.json"
+    ],
+    "starter": "labs/02-state-contract/assignment.md"
+  },
+  "3": {
+    "title": "LangGraph Routing + Fan-out/Fan-in Lab",
+    "objective": "Implement three workflow combinators in LangGraph and observe how explicit state/edges replace hand-written loop control.",
+    "sourceStudy": [
+          "FREE REQUIRED: Inspect ManagerAgent plus workflow_manager_agent in the public Ch. 7 simulation notebook and review the LangGraph routing/parallelization material.",
+          "Extract only three concepts: specialist delegation, structured/shared aggregation, and guard/HITL transitions. Map each to a LangGraph node/edge/state mechanism.",
+          "Identify one Packt manager behavior we should keep agentic and one we should convert to deterministic graph control."
+    ],
+    "tasks": [
+      "Graph A Router: route lookup, diagnostic, and report requests to three different nodes from a structured RouteDecision.",
+      "Graph B Fan-out/Fan-in: dispatch West, East, and Central margin analysis workers and aggregate their TaskResults into one state.",
+      "Graph C Orchestrator-worker: planner dynamically selects 2–5 analysis workers for ‘Why did gross margin decline from Q1 to Q2?’ and aggregate only after all selected workers complete.",
+      "Emit a trace containing node name, start/end time, input state keys, and output state keys."
+    ],
+    "fixed": [
+      "Use Northstar Retail data only.",
+      "Reference answer: total gross margin falls from 41.8% in Q1 to about 35.98% in Q2; West has the largest gross-profit decline (-30 in dataset units)."
+    ],
+    "constraints": [
+      "LangGraph required",
+      "Workers receive task-scoped context",
+      "Aggregation must use structured results, not concatenated chat transcripts"
+    ],
+    "acceptance": [
+      "Each of the three routes executes exactly one specialized branch",
+      "Fan-out produces exactly three worker results before aggregation",
+      "Orchestrator emits between 2 and 5 tasks",
+      "Final diagnostic identifies West as the largest negative gross-profit contributor",
+      "Trace proves aggregate happens after workers"
+    ],
+    "deliverables": [
+      "graphs.py",
+      "test_graphs.py",
+      "graph-trace.json",
+      "graph-diagram.md"
+    ],
+    "starter": "labs/03-langgraph-combinators/assignment.md"
+  },
+  "4": {
+    "title": "MCP Boundary + Adapter Lab",
+    "objective": "Prove that orchestration code can depend on stable capability interfaces rather than MCP implementation details.",
+    "sourceStudy": [
+          "FREE REQUIRED: Review the Hugging Face MCP architecture/capabilities lessons and inspect the public Ch. 7 tool-registry/selection implementation. Inventory responsibilities.",
+          "For each of 12 supplied concerns, decide whether it belongs to control plane, harness, MCP/tool, resource/context, or Skill before writing the adapter.",
+          "Document one failure caused by putting workflow policy inside a tool adapter."
+    ],
+    "tasks": [
+      "Create AnalyticsCapabilities with get_schema(table), run_readonly_query(sql), and render_chart(spec).",
+      "Implement LocalNorthstarAdapter against the bundled SQLite data.",
+      "Implement MCPAnalyticsAdapter whose methods map to your MCP client, but normalize outputs/errors to the same local interface.",
+      "Classify 12 supplied concerns as control plane, agent harness, MCP/tool, resource/context, or Skill.",
+      "Run the same analysis function against the local adapter and MCP adapter without changing analysis code."
+    ],
+    "fixed": [
+      "retry count, max revisions, task scheduling, and checkpoint policy are NOT allowed inside the adapter",
+      "Tool errors must normalize to a typed CapabilityError"
+    ],
+    "constraints": [
+      "The analysis function may import only the interface/protocol, not an MCP SDK",
+      "No framework-specific types in the capability contract"
+    ],
+    "acceptance": [
+      "Local adapter passes conformance tests",
+      "MCP adapter has the same public method signatures",
+      "Switching adapters requires configuration only",
+      "No retry/loop policy appears in adapter code",
+      "CapabilityError includes tool name and original cause"
+    ],
+    "deliverables": [
+      "capabilities.py",
+      "local_adapter.py",
+      "mcp_adapter.py",
+      "boundary-classification.md",
+      "test_capabilities.py"
+    ],
+    "starter": "labs/04-mcp-boundary/assignment.md"
+  },
+  "5": {
+    "title": "Structured Planner + Validator Lab",
+    "objective": "Make planning an inspectable artifact and separate semantic planning from deterministic plan validation.",
+    "sourceStudy": [
+          "FREE REQUIRED: Inspect PlanningAgent decomposition/execution in the public Ch. 5 simulation notebook and compare it with Anthropic's orchestrator-worker pattern. Draw the dependency graph for one example plan.",
+          "Inspect chapter09/LLM_COMPARISON.md and record the PlannerAgent structured-output parsing failure as a design requirement.",
+          "Write PLANNER_CONTRACT.md before coding: exact schema, parse failure behavior, one-replan rule, and what must never be silently repaired."
+    ],
+    "tasks": [
+      "Implement AnalysisPlan and AnalysisTask schemas with objective, success_criteria, task IDs, dependencies, required_capabilities, and parallelizable flag.",
+      "Planner must return schema-valid JSON for the 10 supplied business questions.",
+      "Implement validate_plan(): detect duplicate IDs, missing dependencies, cycles, no terminal task, and unavailable capabilities.",
+      "If validation fails, allow exactly one replan using a machine-generated validation error summary.",
+      "Do not execute any analysis in this module."
+    ],
+    "fixed": [
+      "Cases include simple lookup, root-cause analysis, visualization request, ambiguous request, impossible capability, and intentionally over-broad request.",
+      "A simple lookup should not become a 10-task plan."
+    ],
+    "constraints": [
+      "Planner is LLM-driven or mockable",
+      "Validator is deterministic code",
+      "Maximum replans = 1"
+    ],
+    "acceptance": [
+      "All valid plans pass schema validation",
+      "Cycle fixture is rejected",
+      "Missing dependency fixture is rejected",
+      "Unavailable-capability fixture is rejected",
+      "Simple lookup uses <=2 tasks",
+      "Ambiguous case explicitly requests clarification or records an ambiguity"
+    ],
+    "deliverables": [
+      "planner.py",
+      "plan_models.py",
+      "plan_validator.py",
+      "planner_cases.jsonl",
+      "planner_results.json"
+    ],
+    "starter": "labs/05-planning/assignment.md"
+  },
+  "6": {
+    "title": "Critic, Verifier, and Revision Lab",
+    "objective": "Demonstrate that quality critique and correctness verification are different mechanisms with different authority.",
+    "sourceStudy": [
+          "FREE REQUIRED: Study Anthropic's evaluator-optimizer pattern and inspect Verification & Validation plus the Tri-Agent Pipeline in the public Ch. 8 simulation notebook.",
+          "Draw two separate flows: generate → critic → revise and candidate finding → verifier → pass/block/escalate. Explain their different authority.",
+          "FREE REQUIRED: Inspect public chapter09/self_improving.py and explain why an improvement proposal is not evidence of improvement; connect this to the evaluator/benchmark material."
+    ],
+    "tasks": [
+      "Implement AnalysisCritic producing rubric scores for evidence support, alternative explanations, causal language, completeness, and executive usefulness.",
+      "Implement VisualizationCritic producing rubric scores for chart choice, labeling, scale, clutter, and question relevance.",
+      "Implement deterministic NumericVerifier that recomputes any claimed margin delta from source values.",
+      "Run generate → verify → critique → revise with max_revisions=2.",
+      "Create a case where critic quality is high but NumericVerifier fails, proving verification gates correctness independently."
+    ],
+    "fixed": [
+      "Fixture A claims margin fell 4.2 points; bundled data truth is about 5.82 points.",
+      "Fixture B chart truncates a bar-axis in a way that exaggerates a small difference."
+    ],
+    "constraints": [
+      "Verifier cannot call the same generator prompt/model path as its sole evidence",
+      "Verifier failure blocks acceptance",
+      "Critic feedback alone does not override a verifier failure"
+    ],
+    "acceptance": [
+      "Wrong 4.2-point claim is rejected",
+      "Correct recomputed delta passes",
+      "Bad chart receives revise verdict",
+      "Revision loop cannot exceed two revisions",
+      "Trace distinguishes verifier events from critic events"
+    ],
+    "deliverables": [
+      "critics.py",
+      "verifiers.py",
+      "revision_loop.py",
+      "fixtures/",
+      "test_quality_loop.py"
+    ],
+    "starter": "labs/06-quality-loops/assignment.md"
+  },
+  "7": {
+    "title": "End-to-End Analytics Vertical Slice",
+    "objective": "Assemble the learned patterns into one complete evidence-grounded analytics workflow, first on the bundled dataset and then through your MCP adapter.",
+    "sourceStudy": [
+          "FREE REQUIRED: Work through the Phoenix talk-to-your-data example and inspect the Data Analysis, V&V, and Tri-Agent Pipeline sections in the public Ch. 8 simulation notebook.",
+          "Create PIPELINE_MAPPING.md mapping book stages to our Planner/Workers → Verifiers/Critics → reanalysis/escalation architecture.",
+          "List three things we deliberately keep from our design instead of copying the book pipeline: typed state, evidence IDs, MCP adapter boundary, deterministic convergence rules (pick at least three)."
+    ],
+    "tasks": [
+      "Answer exactly: ‘Why did gross margin fall from Q1 to Q2, and which region contributed most?’",
+      "Planner creates structured tasks; workers retrieve data; analysis emits Findings with evidence IDs; chart generator emits one visualization spec; verifier recomputes key numeric claims; critics review narrative and chart; finalizer consumes approved artifacts only.",
+      "Run Part A against Northstar Retail.",
+      "Run Part B by swapping only the capability adapter to your real MCP-backed source and choose one analogous known-answer question from that system."
+    ],
+    "fixed": [
+      "Northstar truth: Q1 margin 41.8%; Q2 margin ≈35.98%; change ≈-5.82 percentage points; West gross profit changes 178→148 (-30), the largest negative contribution."
+    ],
+    "constraints": [
+      "No raw tool transcript in finalizer context unless explicitly needed",
+      "Every final numeric claim must reference evidence",
+      "Part B may change configuration/mapping but not workflow architecture"
+    ],
+    "acceptance": [
+      "Northstar answer states the correct margin change within 0.05 pp",
+      "West is correctly identified as largest negative GP contributor",
+      "At least one chart passes visualization critic",
+      "Verifier passes every numeric claim in final answer",
+      "MCP-backed run completes with same graph/control flow"
+    ],
+    "deliverables": [
+      "vertical_slice/",
+      "northstar_run.json",
+      "mcp_run.json",
+      "final_report.md",
+      "one chart artifact/spec"
+    ],
+    "starter": "labs/07-vertical-slice/assignment.md"
+  },
+  "8": {
+    "title": "Durability + Failure Injection Lab",
+    "objective": "Make the workflow resumable and prove failure semantics with deterministic injected faults.",
+    "sourceStudy": [
+          "FREE REQUIRED: Review LangGraph persistence/HITL and inspect both workflow examples in the public Ch. 7 simulation notebook.",
+          "List every visible guard condition and classify it as retry, reject, HITL/escalate, or continue.",
+          "Define the checkpoint payload that must survive a crash; separately list ephemeral model context that may be recomputed."
+    ],
+    "tasks": [
+      "Fault 1: data tool times out twice, succeeds on third call; retry policy permits exactly 3 attempts.",
+      "Fault 2: planner marks request ambiguous; graph interrupts and resumes after supplied clarification.",
+      "Fault 3: simulate process crash after two workers complete; restart from checkpoint and do not repeat completed idempotent workers.",
+      "Fault 4: critic requests additional evidence; route back to analysis once, then continue to synthesis.",
+      "Record attempt count and checkpoint ID in trace."
+    ],
+    "fixed": [
+      "Use a deterministic failure injector; do not depend on random failures."
+    ],
+    "constraints": [
+      "Retries must distinguish transient CapabilityError from validation failure",
+      "No retry loop can be unbounded",
+      "Checkpoint state must be serializable"
+    ],
+    "acceptance": [
+      "Timeout case succeeds on exactly attempt 3",
+      "Ambiguous case pauses before data query",
+      "Resume case does not duplicate completed worker result",
+      "Critic-to-analysis back-edge occurs at most once in fixture",
+      "Exhausted retries end in explicit failed status"
+    ],
+    "deliverables": [
+      "durable_graph.py",
+      "failure_injector.py",
+      "test_durability.py",
+      "resume-trace.json"
+    ],
+    "starter": "labs/08-durability/assignment.md"
+  },
+  "9": {
+    "title": "CrewAI vs Workflow Controlled Experiment",
+    "objective": "Evaluate multi-agent collaboration empirically rather than assuming more agents are better.",
+    "sourceStudy": [
+          "FREE REQUIRED: Review CrewAI Flows vs Crews and inspect ManagerAgent/shared memory/conflict resolution in the public Ch. 7 simulation notebook.",
+          "Write an explicit hypothesis for what multi-agent specialization should improve in our analytics task (quality, latency, conflict detection, etc.).",
+          "Define the measurement that would cause you to remove the Crew/multi-agent layer again."
+    ],
+    "tasks": [
+      "Implement the same Northstar diagnostic in Version A using your LangGraph planner/workers and Version B using a CrewAI Flow/Crew with region/data specialists.",
+      "Run each version 5 times on the same model/settings.",
+      "Record answer correctness, number of model calls, tool calls, wall time, tokens/cost if available, and trace complexity.",
+      "Write a decision memo: keep, restrict, or remove the multi-agent approach for this use case."
+    ],
+    "fixed": [
+      "Both versions must use the same capability adapter and final verification rules."
+    ],
+    "constraints": [
+      "Do not change the question between variants",
+      "Do not give one variant extra source data",
+      "Decision must cite measured results"
+    ],
+    "acceptance": [
+      "10 total runs recorded",
+      "Both variants pass numeric verifier or failures are counted",
+      "Comparison table includes all required metrics",
+      "Decision memo identifies at least two benefits and two costs",
+      "Architecture decision log updated with the result"
+    ],
+    "deliverables": [
+      "comparison_runs.csv",
+      "crewai_variant/",
+      "langgraph_variant/",
+      "framework-decision.md"
+    ],
+    "starter": "labs/09-crewai-comparison/assignment.md"
+  },
+  "10": {
+    "title": "25-Case Agent Evaluation Suite",
+    "objective": "Create regression tests that measure nodes, trajectories, and final outcomes separately.",
+    "sourceStudy": [
+          "FREE REQUIRED: Study the free agent-evaluation material and inspect public chapter09/self_improving.py as a control loop, not as production self-modification permission.",
+          "Inspect chapter09/LLM_COMPARISON.md and turn at least one observed structured-output failure into a regression test.",
+          "Write PROMOTION_POLICY.md before changing prompts: no-regression metrics, tolerances, review requirements, and rollback trigger."
+    ],
+    "tasks": [
+      "Create 25 cases: 5 numeric known-answer, 5 routing/tool-choice, 5 ambiguous/clarification, 5 injected-failure, 5 visualization/quality cases.",
+      "For each case define required evidence, expected facts/ranges, forbidden claims/actions, and allowed trajectory flexibility.",
+      "Implement at least three deterministic graders and one model-based grader.",
+      "Produce per-case results plus aggregate metrics.",
+      "Establish a baseline before changing any prompts/architecture."
+    ],
+    "fixed": [
+      "At least five cases must use exact known answers from Northstar; at least five must allow multiple valid tool trajectories."
+    ],
+    "constraints": [
+      "Do not use one LLM judge for every metric",
+      "A trajectory mismatch must not fail a case when an alternate valid path satisfies outcome constraints"
+    ],
+    "acceptance": [
+      "Exactly 25+ cases run from one command",
+      "Numeric known-answer accuracy >=95% on Northstar cases",
+      "Every case reports node/trajectory/outcome dimensions",
+      "Forbidden-action grader is deterministic",
+      "Baseline results are versioned"
+    ],
+    "deliverables": [
+      "evals/benchmark.jsonl",
+      "evals/graders.py",
+      "evals/run_evals.py",
+      "evals/baseline-results.json",
+      "evals/report.md"
+    ],
+    "starter": "labs/10-evals/assignment.md"
+  },
+  "11": {
+    "title": "Production Chaos + Controlled Improvement Lab",
+    "objective": "Prove the SQL harness fails safely, then build a versioned champion/challenger loop that can improve configuration only through explicit evaluation and promotion gates.",
+    "sourceStudy": [
+          "FREE REQUIRED: Study Anthropic's SRE safety hooks and Hosting recipe; identify protections that remain outside model judgment.",
+          "FREE REQUIRED: Review public chapter09/self_improving.py as a comparison. Extract the useful sensing→critic→planner idea, but list the extra safeguards our SQL harness requires before any change can be promoted.",
+          "For each chaos case, name the guardrail or release gate it is testing."
+    ],
+    "tasks": [
+      "Run the 10-case chaos matrix: MCP timeout; malformed tool JSON; unavailable capability; prompt injection in metadata; oversized result; duplicate retry/idempotency; parallel worker failure; contradictory critic verdicts; budget exhaustion; corrupt checkpoint.",
+      "Implement immutable ConfigVersion objects with parent, exact diff, motivating failure cluster, benchmark result, approval, and promotion/rejection reason.",
+      "Implement failure clustering → improvement proposal → approval → challenger → full benchmark → promotion/reject → audit log.",
+      "Restrict automated proposals to declared configuration surfaces: prompt/examples, schema-context policy, bounded verifier thresholds/rules, and model routing.",
+      "Create one deliberately bad challenger and prove a hard safety/correctness gate rejects it; create one eligible improvement and prove it cannot promote until approval is recorded.",
+      "Demonstrate rollback to the exact previous champion configuration."
+    ],
+    "fixed": [
+      "No chaos case may result in an unbounded loop or silent successful answer based on missing evidence.",
+      "The production champion never edits itself in place; all changes are challengers until promoted."
+    ],
+    "constraints": [
+      "Faults are injected deterministically",
+      "Sensitive/internal stack traces are not surfaced as final user answers",
+      "External data cannot modify system/control policy",
+      "Any safety or hard deterministic correctness regression blocks promotion regardless of average score"
+    ],
+    "acceptance": [
+      "All 10 chaos cases execute without uncontrolled process failure",
+      "Prompt-injection fixture cannot enable a forbidden tool/action",
+      "Budget case stops at configured limit",
+      "Bad challenger is rejected by a hard gate",
+      "Eligible challenger cannot promote without explicit approval",
+      "Rollback restores the exact previous champion",
+      "Every failure and promotion decision has a trace/audit ID"
+    ],
+    "deliverables": [
+      "chaos/chaos_cases.yaml",
+      "chaos/results.json",
+      "project/sql_harness/improvement.py",
+      "project/config_versions/",
+      "production-readiness.md",
+      "promotion-audit.json"
+    ],
+    "starter": "labs/11-production/assignment.md"
+  },
+  "12": {
+    "title": "Capstone: Baseline-vs-SQL-Harness + Improvement Cycle",
+    "objective": "Demonstrate that the final SQL harness earns its complexity, then execute one full evidence-driven champion/challenger improvement cycle.",
+    "sourceStudy": [
+          "Revisit your SOURCE_NOTES.md files from Modules 1–11 rather than rereading sources end to end.",
+          "Re-audit the final design against Anthropic Dynamic Workflows: identify which regions legitimately need model autonomy and which are deterministic scripts.",
+          "Compare the final project structure and eval discipline with Anthropic's free Text-to-SQL reference and evaluation suite.",
+          "Create a 'Rejected patterns' section naming at least three plausible agent patterns you intentionally did not use and why."
+    ],
+    "tasks": [
+      "Run the frozen Module 0 baseline and final SQL harness against the identical frozen benchmark with identical model/data access where applicable.",
+      "Compare correctness, unsafe-action block rate, unsupported-claim rate, verifier failures caught, tool/model calls, latency, token/cost, and convergence iterations.",
+      "Select three representative traces: straightforward success, bounded repair, and graceful failure/clarification.",
+      "Execute one full improvement cycle from a real failure cluster: proposal → approval → challenger → benchmark → promote/reject.",
+      "Demonstrate rollback from the current champion to its parent version.",
+      "Present the final architecture and list what you deliberately chose NOT to agentify."
+    ],
+    "fixed": [
+      "No cherry-picking cases. Report every benchmark case and every hard-gate failure."
+    ],
+    "constraints": [
+      "Final conclusions must acknowledge complexity/latency/cost tradeoffs",
+      "Architecture diagrams must distinguish control plane, harness, tools/MCP, state/session, critics, verifiers, eval plane, and improvement/promotion plane",
+      "Improvement claims must be benchmark-supported; a promoted challenger must be reversible"
+    ],
+    "acceptance": [
+      "Baseline and final harness run on the identical frozen benchmark",
+      "Final harness meets Module 10 hard safety/correctness thresholds",
+      "Unsupported-claim rate does not regress",
+      "At least one reliability/correctness metric improves materially",
+      "One complete challenger experiment ends in a policy-valid promote or reject decision",
+      "Rollback is demonstrated",
+      "All known failures/limitations and rejected architecture patterns are documented"
+    ],
+    "deliverables": [
+      "capstone/CAPSTONE.md",
+      "capstone/baseline-results.json",
+      "capstone/final-results.json",
+      "capstone/improvement-cycle.json",
+      "capstone/champion-history.json",
+      "capstone/traces/",
+      "capstone/architecture-final.md"
+    ],
+    "starter": "labs/12-capstone/assignment.md"
+  }
+};
+
+const KEY = "agenticAnalyticsCourseProgressV41";
+const defaultWorksheet = () => ([
+  {step:"User asks a business/data-analysis question", owner:"L", current:"LLM interprets the request and decides what to do next.", target:"LLM interprets intent; workflow state records the request.", reason:"Judgment is useful, but the request must become explicit state."},
+  {step:"Choose analysis approach / decompose work", owner:"L", current:"LLM implicitly decides subtasks in its own context.", target:"LLM emits a typed AnalysisPlan; code validates it.", reason:"Planning benefits from model judgment, while validity should be deterministic."},
+  {step:"Determine which tasks/stages are ready to run", owner:"D", current:"LLM effectively owns most sequencing.", target:"Control plane evaluates stage/task dependencies; an agent harness may choose tool actions within an active stage.", reason:"High-level lifecycle is explicit while useful local autonomy is preserved."},
+  {step:"Retrieve governed metadata / KPI definitions", owner:"T", current:"LLM calls existing MCP capabilities.", target:"Workflow nodes call MCP resources/tools through explicit interfaces.", reason:"MCP should expose capabilities/context, not own the outer loop."},
+  {step:"Retrieve/query enterprise data", owner:"T", current:"LLM calls MCP/server tools to get data.", target:"Task node executes MCP tool with retries, typed result, provenance.", reason:"Execution belongs to capability layer; retry policy belongs to workflow."},
+  {step:"Interpret data / generate findings", owner:"L", current:"LLM analyzes tool output.", target:"Specialized analysis node produces structured Findings linked to evidence.", reason:"Interpretation requires judgment and domain reasoning."},
+  {step:"Choose visualization", owner:"L", current:"LLM chooses chart directly.", target:"LLM/Skill proposes visualization spec; deterministic validator checks constraints.", reason:"Chart choice benefits from judgment; validity and rendering constraints do not."},
+  {step:"Render visualization", owner:"T", current:"LLM directs rendering.", target:"Rendering is a tool/capability call from a workflow node.", reason:"Rendering is execution, not orchestration."},
+  {step:"Critique analysis and visualization", owner:"L", current:"LLM may self-critique informally.", target:"Dedicated rubric-based critics return structured critiques.", reason:"Evaluation benefits from model judgment when criteria are explicit."},
+  {step:"Decide whether a stage may continue / revise / exit", owner:"D", current:"LLM decides when it is satisfied.", target:"Control plane evaluates critic verdict/score, stage budget, and max-iteration rules.", reason:"Autonomous inner loops must remain bounded by explicit lifecycle criteria."},
+  {step:"Revise work", owner:"L", current:"Same LLM edits its prior output.", target:"Revision node applies specific critique to the relevant artifact.", reason:"Revision is generative work; the workflow decides when it occurs."},
+  {step:"Assemble final answer / report", owner:"L", current:"LLM produces final output from conversation context.", target:"Finalizer consumes approved state artifacts only.", reason:"Final synthesis is model work, but should operate on validated state."}
+]);
+
+const defaultState = () => ({
+  theme:"light",
+  currentModule:0,
+  architectureDecisions:[
+    {id:"ADR-001", title:"The application control plane owns lifecycle boundaries", status:"accepted", rationale:"Durable state, budgets, checkpoints, stage transitions, approval gates, and convergence criteria must be explicit and inspectable; an agent harness may still own an autonomous model↔tool loop inside a bounded stage.", consequences:"We do not hard-code every tool choice. We bound autonomous loops with stage-level contracts, budgets, and exit criteria."},
+    {id:"ADR-002", title:"MCP is the capability layer, not the orchestrator", status:"accepted", rationale:"MCP tools/resources expose data access and executable capabilities; the host workflow should own sequencing and lifecycle.", consequences:"Retries, scheduling, task dependency resolution, and revision limits stay outside individual MCP tools."},
+    {id:"ADR-003", title:"Planning is model-driven but schema-bound", status:"proposed", rationale:"Task decomposition benefits from LLM judgment, but plans must be explicit, typed, and validated before execution.", consequences:"Planner returns an AnalysisPlan object rather than hidden prose/reasoning."},
+    {id:"ADR-004", title:"Critique is model-driven; acceptance is code-driven", status:"proposed", rationale:"LLMs are useful evaluators when given domain rubrics, but they should not control unbounded self-reflection.", consequences:"Critics return structured scores/verdicts; code enforces pass thresholds and maximum revisions."}
+  ],
+  modules:Object.fromEntries(modules.map(m=>[m.id,{
+    status:"not-started",
+    resources:Array(m.resources.length).fill(false),
+    checklist:Array(m.lab.checklist.length).fill(false),
+    notes:"",
+    labEvidence:"",
+    score:0,
+    gradeNotes:"",
+    assignmentChecks:Array((assignments[m.id]?.acceptance||[]).length).fill(false),
+    quizAnswers:m.id===0 ? ["","","",""] : [],
+    worksheet:m.id===0 ? defaultWorksheet() : []
+  }]))
+});
+let state;
+try { state = JSON.parse(localStorage.getItem(KEY)) || defaultState(); } catch { state=defaultState(); }
+
+function normalizeState(){
+  const fresh=defaultState();
+  if(!state.modules) state.modules={};
+  modules.forEach(m=>{
+    state.modules[m.id]=Object.assign(fresh.modules[m.id],state.modules[m.id]||{});
+    if(!Array.isArray(state.modules[m.id].resources) || state.modules[m.id].resources.length!==m.resources.length)
+      state.modules[m.id].resources=Array(m.resources.length).fill(false);
+    if(!Array.isArray(state.modules[m.id].checklist) || state.modules[m.id].checklist.length!==m.lab.checklist.length)
+      state.modules[m.id].checklist=Array(m.lab.checklist.length).fill(false);
+    const acount=(assignments[m.id]?.acceptance||[]).length;
+    if(!Array.isArray(state.modules[m.id].assignmentChecks) || state.modules[m.id].assignmentChecks.length!==acount)
+      state.modules[m.id].assignmentChecks=Array(acount).fill(false);
+    if(m.id===0){
+      if(!Array.isArray(state.modules[m.id].quizAnswers) || state.modules[m.id].quizAnswers.length!==4) state.modules[m.id].quizAnswers=["","","",""];
+      if(!Array.isArray(state.modules[m.id].worksheet) || state.modules[m.id].worksheet.length===0) state.modules[m.id].worksheet=defaultWorksheet();
+    }
+  });
+  if(!Array.isArray(state.architectureDecisions)) state.architectureDecisions=defaultState().architectureDecisions;
+  state.theme=state.theme||"light";
+  state.currentModule=Number.isInteger(state.currentModule)?state.currentModule:0;
+}
+normalizeState();
+
+function save(){ localStorage.setItem(KEY,JSON.stringify(state)); updateProgress(); }
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),1400); }
+function esc(s){ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c])); }
+
+function statusLabel(s){ return s==="done"?"Done":s==="in-progress"?"In progress":"Not started"; }
+function modulePct(m){
+ const s=state.modules[m.id], ac=s.assignmentChecks||[];
+ const total=m.resources.length+m.lab.checklist.length+ac.length+1;
+ const done=s.resources.filter(Boolean).length+s.checklist.filter(Boolean).length+ac.filter(Boolean).length+(s.status==="done"?1:0);
+ return Math.round(100*done/Math.max(1,total));
+}
+
+function selfGradePrompt(m){
+ const rubric=m.lab.rubric.map((r,i)=>`${i+1}. ${r}`).join("\n");
+ const checks=m.lab.checklist.map((r,i)=>`${i+1}. ${r}`).join("\n");
+ const a=assignments[m.id];
+ const t=throughProject[m.id];
+ const assignmentText=a ? `\nSPECIFIC PROGRAMMING ASSIGNMENT\n${a.tasks.map((x,i)=>`${i+1}. ${x}`).join("\n")}\n\nACCEPTANCE TESTS\n${a.acceptance.map((x,i)=>`${i+1}. ${x}`).join("\n")}\n` : "";
+ const projectText=t ? `\nTHROUGH-PROJECT MILESTONE\n${t.title}\nBUILD: ${t.build}\nMILESTONE GATE: ${t.gate}\nEXPECTED FILES: ${t.files.join(", ")}\n` : "";
+ return `You are grading a lab from an advanced course on agentic analytics engineering.
+
+MODULE ${m.id}: ${m.title}
+LAB: ${m.lab.title}
+DELIVERABLE: ${m.lab.deliverable}
+
+LAB OBJECTIVE
+${m.lab.description}
+${assignmentText}
+${projectText}
+COMPLETION CHECKLIST
+${checks}
+
+QUALITY RUBRIC
+${rubric}
+
+GRADE MY SUBMISSION STRICTLY. Do not reward sophistication that is not demonstrated in the artifact.
+
+Return:
+1. SCORE: 0–100
+2. VERDICT: PASS (>=80) or REVISE (<80)
+3. RUBRIC SCORES: score each rubric item 1–5 with one sentence of evidence
+4. MISSING / WEAK: the 3 most important deficiencies
+5. REQUIRED REVISIONS: concrete edits required to reach 80+
+6. STRETCH IMPROVEMENT: one improvement that would make this production-grade
+7. ACCEPTANCE CHECK: explicitly mark each supplied acceptance test PASS / FAIL / NOT DEMONSTRATED
+8. ARCHITECTURE CHECK: identify anything that gives the LLM control beyond the intended pattern boundary, or hard-codes decisions that the exercise intends to leave agentic
+
+Here is my lab artifact / description:
+
+[PASTE LAB CODE, DESIGN, TRACE, OR WRITEUP HERE]`;
+}
+
+function renderSidebar(){
+ const el=document.getElementById("moduleList");
+ el.innerHTML=modules.map(m=>{
+   const s=state.modules[m.id].status;
+   return `<a href="#module-${m.id}" class="module-link ${state.currentModule===m.id&&location.hash?"active":""}" data-mid="${m.id}">
+      <span class="num">${m.id}</span><span class="title">${esc(m.title)}</span><span class="dot ${s}"></span>
+   </a>`;
+ }).join("");
+ el.querySelectorAll("[data-mid]").forEach(a=>a.onclick=e=>{e.preventDefault();openModule(Number(a.dataset.mid));});
+}
+
+function renderOutline(filter="all",search=""){
+ const el=document.getElementById("outline");
+ const q=search.toLowerCase().trim();
+ const filtered=modules.filter(m=>{
+   const st=state.modules[m.id].status;
+   const statusOK=filter==="all"||st===filter;
+   const hay=(m.title+" "+m.goal+" "+m.topics.join(" ")+" "+m.lab.title+" "+m.lab.description).toLowerCase();
+   return statusOK && (!q||hay.includes(q));
+ });
+ el.innerHTML=filtered.map(m=>`<article class="outline-card" data-open="${m.id}">
+   <div class="outline-num">${m.id}</div>
+   <div><h3>${esc(m.title)}</h3><p>${esc(m.goal)}</p></div>
+   <div style="display:grid;gap:6px;justify-items:end"><span class="chip">${esc(m.duration)}</span><span class="chip">${modulePct(m)}%</span></div>
+ </article>`).join("") || `<div class="section">No modules match that filter.</div>`;
+ el.querySelectorAll("[data-open]").forEach(x=>x.onclick=()=>openModule(Number(x.dataset.open)));
+}
+
+
+function renderModule0Lesson(m,s){
+  const q = s.quizAnswers || ["","","",""];
+  return `
+   <section class="section" id="lesson">
+    <h3>Lesson 0 — What are we actually building?</h3>
+    <div class="lesson-nav">
+      <a href="#mental-model">Mental model</a><a href="#patterns">Patterns</a><a href="#reading-guide">Reading guide</a><a href="#checks">Checks</a><a href="#worksheet">Architecture worksheet</a><a href="#adr">Decision log</a>
+    </div>
+    <div class="lesson-callout"><strong>Course thesis</strong>Move lifecycle and workflow boundaries out of implicit LLM behavior and into an explicit control plane, while allowing an agent harness to run autonomous model↔tool loops inside bounded stages where judgment, planning, analysis, critique, and adaptation add value.</div>
+    <h4 id="mental-model">1. Workflow vs. agent</h4>
+    <p>A <strong>workflow</strong> has a largely predefined control structure: code owns sequence, state transitions, retries, limits, and completion rules. An <strong>agent</strong> is given more latitude to decide what action to take next. A production system can combine both.</p>
+    <p>Our target is deliberately hybrid: <strong>deterministic outer control + selective model autonomy inside nodes</strong>.</p>
+    <div class="lesson-grid">
+      <div class="concept-card"><h4>D — Deterministic code</h4><p>Scheduling, dependency checks, retry budgets, routing conditions, thresholds, checkpoints, iteration limits.</p></div>
+      <div class="concept-card"><h4>L — LLM judgment</h4><p>Intent interpretation, decomposition, hypothesis generation, analysis, synthesis, critique, revision.</p></div>
+      <div class="concept-card"><h4>T — Tool / MCP capability</h4><p>Execute SQL, retrieve governed metadata, query systems, render artifacts, fetch data.</p></div>
+      <div class="concept-card"><h4>S — Skill / domain expertise</h4><p>Business-analysis methods, visualization policy, executive-writing standards, KPI semantics, critique rubrics.</p></div>
+    </div>
+    <h4 id="patterns">2. Five workflow patterns to recognize</h4>
+    <table class="mini-table"><thead><tr><th>Pattern</th><th>Use it when…</th><th>Analytics example</th></tr></thead><tbody>
+      <tr><td><strong>Chaining</strong></td><td>One step's structured output becomes the next step's input.</td><td>Interpret request → build plan → validate plan.</td></tr>
+      <tr><td><strong>Routing</strong></td><td>Different inputs require specialized paths.</td><td>Forecast question → forecasting branch; root-cause question → diagnostic branch.</td></tr>
+      <tr><td><strong>Parallelization</strong></td><td>Independent work can happen concurrently.</td><td>Analyze region, product, and customer segments at the same time.</td></tr>
+      <tr><td><strong>Orchestrator–worker</strong></td><td>Subtasks are not fully known until the request is understood.</td><td>Planner dynamically creates analyses based on the business question.</td></tr>
+      <tr><td><strong>Evaluator–optimizer</strong></td><td>Quality improves through explicit critique and bounded revision.</td><td>Generate chart → critique → revise → accept.</td></tr>
+    </tbody></table>
+    <div class="lesson-callout"><strong>The rule to internalize</strong>The model can decide <em>what action is useful inside a bounded agent stage</em>. The application/control plane should own lifecycle, durable state, budgets, checkpoints, stage transitions, approval gates, and convergence limits.</div>
+    <h4>3. The 2026 architecture: control plane, harness, hands, session</h4>
+    <div class="diagram">APPLICATION / CONTROL PLANE
+  durable workflow state
+  stage boundaries
+  budgets / checkpoints / approvals
+  convergence criteria
+          │
+          ▼
+    AGENT HARNESS
+  model ↔ tool loop
+  context management
+  tool routing
+          │
+     ┌────┴────┐
+     ▼         ▼
+   MODEL      HANDS
+              MCP tools
+              SQL/data
+              renderers
+              sandboxes
+          │
+          ▼
+       SESSION
+  durable event/history log</div>
+    <p>This distinction lets us keep high-level analytics stages controlled and observable without forcing every individual tool choice to be pre-scripted. In an exploration stage, for example, the harness may autonomously query several slices and follow evidence; the control plane still owns the stage budget and determines when the workflow moves to synthesis or evaluation.</p>
+
+    <h4>4. What should remain model-driven?</h4>
+    <p>Do not over-correct and turn the system into a rigid pipeline. We still want an LLM to ask: What analyses are likely to explain this change? Which slice is interesting? Is the evidence sufficient? Is the visualization useful? What should be investigated next?</p>
+    <p>The goal is not “less LLM.” It is <strong>better placement of LLM judgment</strong>.</p>
+    <h4 id="reading-guide">5. Reading guide — current Anthropic architecture first</h4>
+    <div class="lesson-callout">
+      <strong>Important 2026 update</strong>
+      Anthropic now flags <em>Building Effective Agents</em> (December 2024) as describing a tooling landscape that has changed. We will keep it for its durable pattern vocabulary, but it is no longer the primary architecture reading.
+    </div>
+    <p><strong>Read in this order:</strong></p>
+    <ol>
+      <li><a href="https://www.anthropic.com/engineering/managed-agents" target="_blank" rel="noopener"><strong>Scaling Managed Agents: Decoupling the brain from the hands</strong></a> — understand <em>session</em>, <em>harness</em>, and <em>sandbox/tools</em> as separable interfaces.</li>
+      <li><a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank" rel="noopener"><strong>Claude Managed Agents overview</strong></a> — understand the current Agent + Environment + Session + Events model and when Anthropic recommends a managed harness versus a custom loop.</li>
+      <li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noopener"><strong>Effective context engineering for AI agents</strong></a> — focus on how tools, MCP, external data, prompts, and history become curated context rather than an ever-growing transcript.</li>
+      <li><a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener"><strong>Building Effective Agents</strong></a> — now read this as a pattern catalog: chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer.</li>
+    </ol>
+    <p>While reading, answer these:</p>
+    <div class="checklist">
+      <label><input type="checkbox"> <span>What should be durable application/session state versus ephemeral model context?</span></label>
+      <label><input type="checkbox"> <span>Where should our control plane stop and an autonomous agent harness begin?</span></label>
+      <label><input type="checkbox"> <span>Which existing xFalcon MCP capabilities are “hands” that should remain replaceable?</span></label>
+      <label><input type="checkbox"> <span>Which of the older workflow patterns still maps directly to our analytics process?</span></label>
+      <label><input type="checkbox"> <span>Where would a bounded evaluator/optimizer loop improve quality measurably?</span></label>
+    </div>
+    <h4 id="checks">6. Comprehension checks</h4>
+    <div class="quiz-q"><strong>Q1.</strong> Why is “the LLM decides whether it is done” a weak production boundary?<textarea id="q-0-0" placeholder="Answer in 2–4 sentences.">${esc(q[0])}</textarea></div>
+    <div class="quiz-q"><strong>Q2.</strong> Give one example from your system where the LLM should keep autonomy, and one where code should take over.<textarea id="q-0-1" placeholder="One L example, one D example.">${esc(q[1])}</textarea></div>
+    <div class="quiz-q"><strong>Q3.</strong> Why is MCP best treated as a capability boundary rather than the outer workflow engine?<textarea id="q-0-2" placeholder="Focus on responsibility and lifecycle.">${esc(q[2])}</textarea></div>
+    <div class="quiz-q"><strong>Q4.</strong> What is the difference between a critic producing feedback and the workflow deciding whether to revise?<textarea id="q-0-3" placeholder="Explain evaluator judgment vs deterministic control.">${esc(q[3])}</textarea></div>
+   </section>
+   <section class="section" id="worksheet">
+     <h3>Lab 0 worksheet — Map the current system</h3>
+     <p style="color:var(--muted)">Pre-seeded from our current understanding. Edit the <strong>Current behavior</strong> column to match the implementation exactly before accepting the target design.</p>
+     <div class="diagram">USER QUESTION
+     │
+     ▼
+  LLM interprets request
+     │
+     ▼
+  LLM implicitly plans / sequences work
+     │
+     ├── Skills / analysis methods
+     │
+     └── MCP tools/resources ──► data / SQL / metadata / rendering
+     │
+     ▼
+  LLM analyzes + visualizes
+     │
+     ▼
+  LLM critiques / edits itself
+     │
+     ▼
+  LLM decides it is finished
+
+TARGET DIRECTION:
+LLM judgment inside nodes
+        +
+explicit workflow state / routing / iteration limits outside the LLM</div>
+     <div style="overflow:auto;margin-top:14px"><table class="worksheet-table"><thead><tr><th style="min-width:210px">Step</th><th style="width:80px">Owner</th><th style="min-width:220px">Current behavior</th><th style="min-width:240px">Target behavior</th><th style="min-width:220px">Why</th></tr></thead><tbody id="worksheetRows">
+       ${s.worksheet.map((r,i)=>`<tr><td><textarea data-wi="${i}" data-wf="step">${esc(r.step)}</textarea></td><td><select data-wi="${i}" data-wf="owner">${["D","L","T","S"].map(v=>`<option value="${v}" ${r.owner===v?"selected":""}>${v}</option>`).join("")}</select></td><td><textarea data-wi="${i}" data-wf="current">${esc(r.current)}</textarea></td><td><textarea data-wi="${i}" data-wf="target">${esc(r.target)}</textarea></td><td><textarea data-wi="${i}" data-wf="reason">${esc(r.reason)}</textarea></td></tr>`).join("")}
+     </tbody></table></div>
+     <div class="worksheet-actions"><button id="addWorksheetRow">Add row</button><button id="copyWorksheet">Copy worksheet as Markdown</button><button id="downloadArchitecture">Download architecture-v0.md</button></div>
+   </section>
+   <section class="section" id="adr">
+     <h3>Architecture Decision Log</h3>
+     <p style="color:var(--muted)">Decisions persist across the entire course. Treat proposed decisions as hypotheses until later labs and evals justify them.</p>
+     <div id="adrList" class="adr-list"></div>
+     <h4>Add decision</h4>
+     <div class="adr-form"><input id="adrTitle" placeholder="Decision title"><select id="adrStatus"><option value="proposed">Proposed</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option><option value="superseded">Superseded</option></select><textarea id="adrRationale" placeholder="Rationale — why are we making this choice?"></textarea><textarea id="adrConsequences" placeholder="Consequences — what does this imply for the implementation?"></textarea></div>
+     <div class="worksheet-actions"><button class="primary" id="addAdr">Add architecture decision</button><button id="downloadAdr">Download decision-log.md</button></div>
+   </section>`;
+}
+
+function worksheetMarkdown(rows){
+  let out = `# Architecture v0 — Current to Target\n\nLegend: **D** deterministic code · **L** LLM judgment · **T** tool/MCP · **S** Skill/domain expertise\n\n| Step | Owner | Current behavior | Target behavior | Why |\n|---|---|---|---|---|\n`;
+  for(const r of rows){ const clean=x=>String(x||"").replace(/\|/g,"\\|").replace(/\n/g," "); out += `| ${clean(r.step)} | ${clean(r.owner)} | ${clean(r.current)} | ${clean(r.target)} | ${clean(r.reason)} |\n`; }
+  out += `\n## Initial target architecture\n\n\`\`\`text\nUser question\n  ↓\nIntent / scope (LLM)\n  ↓\nStructured plan (LLM) → validate (code)\n  ↓\nScheduler / routing (code)\n  ↓\nMCP tools + Skills inside bounded worker nodes\n  ↓\nStructured findings / visualizations\n  ↓\nRubric critics (LLM)\n  ↓\nPass threshold + max revisions (code)\n  ↓\nFinalizer (LLM)\n\`\`\`\n`;
+  return out;
+}
+function adrMarkdown(){ let out="# Architecture Decision Log\n\n"; for(const d of state.architectureDecisions){ out += `## ${d.id}: ${d.title}\n\n- **Status:** ${d.status}\n- **Rationale:** ${d.rationale}\n- **Consequences:** ${d.consequences}\n\n`; } return out; }
+function downloadText(filename,text){ const blob=new Blob([text],{type:"text/markdown"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href); }
+function renderAdrList(){
+  const el=document.getElementById("adrList"); if(!el)return;
+  el.innerHTML=state.architectureDecisions.map((d,i)=>`<div class="adr-card"><div class="adr-head"><div><div class="adr-title">${esc(d.id)} — ${esc(d.title)}</div><div class="adr-meta">Status: ${esc(d.status)}</div></div><button data-deladr="${i}">Delete</button></div><div class="adr-body"><strong>Rationale:</strong> ${esc(d.rationale)}</div><div class="adr-body"><strong>Consequences:</strong> ${esc(d.consequences)}</div></div>`).join("");
+  el.querySelectorAll("[data-deladr]").forEach(b=>b.onclick=()=>{state.architectureDecisions.splice(Number(b.dataset.deladr),1);save();renderAdrList();});
+}
+
+
+function renderModule1Lesson(){
+ return `<section class="section" id="pattern-atlas"><h3>Pattern Atlas — learn these before frameworks</h3>
+ <p style="color:var(--muted)">These are control-flow patterns, not competing products. Production systems normally compose several of them.</p>
+ <div class="pattern-atlas">
+  <div class="pattern-card"><strong>1. Single-shot</strong><span>One model invocation. No explicit loop. Best baseline for classification, extraction, formatting, and simple deterministic tasks.</span></div>
+  <div class="pattern-card"><strong>2. ReAct / tool-using</strong><span>Choose action → execute tool → observe → repeat. Useful when the next action depends on evidence discovered at runtime.</span></div>
+  <div class="pattern-card"><strong>3. Planner–executor</strong><span>Separate long-horizon decomposition from task execution. Useful for multi-step analysis and research pipelines.</span></div>
+  <div class="pattern-card"><strong>4. Reflexive</strong><span>Generate → critique → revise. Improves quality but does not independently guarantee correctness.</span></div>
+  <div class="pattern-card"><strong>5. Verifier-gated</strong><span>Independent rules/model/calculation validates a proposed action or claim before it is allowed to proceed.</span></div>
+ </div>
+ <div class="lesson-callout"><strong>Critic ≠ verifier</strong>A critic asks “how could this be better?” A verifier asks “is this correct/allowed enough to proceed?” For analytics we will use both.</div>
+ <h4>Composition patterns we will add later</h4>
+ <p>Chaining · routing · fan-out/fan-in · orchestrator-worker · supervisor/handoff · human-in-the-loop · persistent state/memory · evaluator-optimizer · guardrails/policy gates.</p>
+ </section>`;
+}
+
+function renderAnthropicCookbookStudy(m){
+ const a=anthropicCookbookStudy[m.id]; if(!a)return "";
+ return `<section class="source-code-study"><div class="eyebrow">Required free code study</div><h3>${esc(a.title)}</h3><ul>${a.items.map(x=>`<li><a href="${x[1]}" target="_blank" rel="noopener"><strong>${esc(x[0])}</strong></a> — ${esc(x[2])}</li>`).join("")}</ul></section>`;
+}
+
+function renderThroughProject(m){
+ const t=throughProject[m.id]; if(!t)return "";
+ return `<section class="project-mile"><div class="eyebrow">Through-project milestone</div><h3>${esc(t.title)}</h3><p>${esc(t.build)}</p><div class="lesson-callout"><strong>Milestone gate</strong>${esc(t.gate)}</div><div class="project-files">${t.files.map(f=>`<code>${esc(f)}</code>`).join("")}</div><div style="margin-top:12px"><a class="btn" href="project.html">Open SQL Harness project</a></div></section>`;
+}
+
+function renderBookStudy(m){
+ const b=bookStudy[m.id]; if(!b)return "";
+ const free=(b.free||[]).map(x=>`<li><a href="${x[1]}" target="_blank" rel="noopener"><strong>${esc(x[0])}</strong></a> — ${esc(x[2])}</li>`).join("");
+ return `<section class="section"><div class="eyebrow">Free-first source map</div><h3 style="margin-top:5px">Required free coverage + optional Packt enrichment</h3>
+   <div class="lesson-callout"><strong>Course guarantee</strong>No paid chapter is required to complete this module, its assignment, or its self-grade. The sources below cover the required material for free.</div>
+   <h4>Required / free sources</h4><ul>${free}</ul>
+   <div class="book-map-box"><div><div class="book-pages">Optional paid reading: ${esc(b.optionalPages)}</div><div style="font-size:12px;color:var(--muted)">${esc(b.optionalSections)}</div></div><div class="book-note">${esc(b.optionalNote)}</div></div>
+   <div style="font-size:12px;color:var(--muted)">If you own the book, use the page range for a deeper treatment. Skipping it must not block any lab.</div>
+ </section>`;
+}
+
+function renderAssignment(m,s){
+ const a=assignments[m.id]; if(!a)return "";
+ return `<section class="assignment" id="assignment-${m.id}">
+  <div class="assignment-head"><div><div class="eyebrow">Specific assignment</div><h3>${esc(a.title)}</h3><p>${esc(a.objective)}</p></div>${a.starter?`<a class="btn" href="${a.starter}" target="_blank">Open assignment file</a>`:""}</div>
+  ${a.sourceStudy?.length?`<div class="source-study"><h4>Source study / code archaeology — do this first</h4><ol>${a.sourceStudy.map(x=>`<li>${esc(x)}</li>`).join("")}</ol><div style="font-size:12px;margin-top:8px">Record the result in <code>SOURCE_NOTES.md</code> using the supplied template.</div></div>`:""}
+  <h4>Programming tasks</h4><ol>${a.tasks.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>
+  <h4>Fixed scenario / inputs</h4><div class="fixed-box"><ul>${a.fixed.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+  <h4>Constraints</h4><ul>${a.constraints.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+  <h4>Acceptance tests</h4><div class="checklist">${a.acceptance.map((x,i)=>`<label><input type="checkbox" id="a-${m.id}-${i}" ${s.assignmentChecks?.[i]?"checked":""}> <span>${esc(x)}</span></label>`).join("")}</div>
+  <h4>Submit</h4><ul>${a.deliverables.map(x=>`<li><code>${esc(x)}</code></li>`).join("")}</ul>
+ </section>`;
+}
+
+function renderDetail(m){
+ const s=state.modules[m.id];
+ const prompt=selfGradePrompt(m);
+ document.getElementById("detailView").innerHTML = `
+ <article id="module-${m.id}" class="module-detail active">
+   <div class="module-header">
+    <div class="module-top">
+      <div><div class="eyebrow">Module ${m.id}</div><h2>${esc(m.title)}</h2><div class="goal">${esc(m.goal)}</div></div>
+      <select class="status-select" id="status-${m.id}">
+        <option value="not-started" ${s.status==="not-started"?"selected":""}>Not started</option>
+        <option value="in-progress" ${s.status==="in-progress"?"selected":""}>In progress</option>
+        <option value="done" ${s.status==="done"?"selected":""}>Done</option>
+      </select>
+    </div>
+    <div class="meta"><span class="chip">${esc(m.duration)}</span>${m.topics.map(t=>`<span class="chip">${esc(t)}</span>`).join("")}</div>
+   </div>
+
+   ${m.id===0 ? renderModule0Lesson(m,s) : ""}
+   ${m.id===1 ? renderModule1Lesson() : ""}
+
+   <section class="section">
+    <h3>Learning material</h3>
+    ${m.resources.map((r,i)=>`<div class="resource">
+      <input type="checkbox" id="r-${m.id}-${i}" ${s.resources[i]?"checked":""}>
+      <div><div class="r-title"><a href="${r.url}" target="_blank" rel="noopener">${esc(r.title)}</a></div><div class="r-note">${esc(r.note)}</div></div>
+      <span class="chip">${s.resources[i]?"complete":"resource"}</span>
+    </div>`).join("")}
+   </section>
+
+   ${renderAnthropicCookbookStudy(m)}
+   ${renderThroughProject(m)}
+   ${renderBookStudy(m)}
+   ${renderAssignment(m,s)}
+
+   <section class="section">
+    <h3>Lab summary & evidence</h3>
+    <div class="lab-card">
+      <h4 style="margin-top:0">${esc(m.lab.title)}</h4>
+      <p>${esc(m.lab.description)}</p>
+      <div class="deliverable"><strong>Deliverable:</strong> <code>${esc(m.lab.deliverable)}</code></div>
+      <h4>Completion checklist</h4>
+      <div class="checklist">
+      ${m.lab.checklist.map((c,i)=>`<label><input type="checkbox" id="c-${m.id}-${i}" ${s.checklist[i]?"checked":""}> <span>${esc(c)}</span></label>`).join("")}
+      </div>
+      <h4>Lab evidence / link / notes</h4>
+      <textarea id="evidence-${m.id}" placeholder="What did you build? Where is it? What worked? What failed?">${esc(s.labEvidence)}</textarea>
+    </div>
+   </section>
+
+   <section class="section">
+    <h3>Self-grade the lab</h3>
+    <p style="color:var(--muted)">Copy this prompt into the LLM you want to use as your grader, attach/paste the lab artifact, then record the result here.</p>
+    <div class="prompt" id="prompt-${m.id}">${esc(prompt)}</div>
+    <div class="prompt-actions">
+      <button class="primary" id="copy-${m.id}">Copy grading prompt</button>
+    </div>
+    <div class="grade-grid" style="margin-top:16px">
+      <div>
+        <h4>Grader feedback / revision notes</h4>
+        <textarea id="gradeNotes-${m.id}" placeholder="Paste the grader's feedback or your revision plan here.">${esc(s.gradeNotes)}</textarea>
+      </div>
+      <div class="score-box">
+        <div class="eyebrow">Recorded score</div>
+        <div class="score-big"><span id="scoreLabel-${m.id}">${Number(s.score)||0}</span>/100</div>
+        <input id="score-${m.id}" type="range" min="0" max="100" step="1" value="${Number(s.score)||0}">
+        <div style="font-size:12px;color:var(--muted);margin-top:8px">Suggested pass: 80+</div>
+      </div>
+    </div>
+   </section>
+
+   <section class="section">
+     <h3>Course notes</h3>
+     <textarea id="notes-${m.id}" placeholder="Concepts to remember, questions, design decisions, links, ideas…">${esc(s.notes)}</textarea>
+   </section>
+
+   <div style="display:flex;justify-content:space-between;gap:8px;margin-top:16px">
+     <button ${m.id===0?"disabled":""} id="prev-${m.id}">← Previous</button>
+     <button class="primary" ${m.id===modules.length-1?"disabled":""} id="next-${m.id}">Next module →</button>
+   </div>
+ </article>`;
+
+ document.getElementById(`status-${m.id}`).onchange=e=>{s.status=e.target.value;save();renderSidebar();updateResume();};
+ m.resources.forEach((_,i)=>document.getElementById(`r-${m.id}-${i}`).onchange=e=>{s.resources[i]=e.target.checked;if(s.status==="not-started")s.status="in-progress";save();renderSidebar();});
+ m.lab.checklist.forEach((_,i)=>document.getElementById(`c-${m.id}-${i}`).onchange=e=>{s.checklist[i]=e.target.checked;if(s.status==="not-started")s.status="in-progress";save();renderSidebar();});
+ document.getElementById(`evidence-${m.id}`).oninput=e=>{s.labEvidence=e.target.value;save();};
+ document.getElementById(`notes-${m.id}`).oninput=e=>{s.notes=e.target.value;save();};
+ document.getElementById(`gradeNotes-${m.id}`).oninput=e=>{s.gradeNotes=e.target.value;save();};
+ const range=document.getElementById(`score-${m.id}`);
+ range.oninput=e=>{s.score=Number(e.target.value);document.getElementById(`scoreLabel-${m.id}`).textContent=s.score;save();};
+ document.getElementById(`copy-${m.id}`).onclick=async()=>{await navigator.clipboard.writeText(prompt);toast("Grading prompt copied");};
+ if(m.id>0) document.getElementById(`prev-${m.id}`).onclick=()=>openModule(m.id-1);
+ if(m.id<modules.length-1) document.getElementById(`next-${m.id}`).onclick=()=>openModule(m.id+1);
+ const aa=assignments[m.id];
+ if(aa) aa.acceptance.forEach((_,i)=>{const el=document.getElementById(`a-${m.id}-${i}`);if(el)el.onchange=e=>{s.assignmentChecks[i]=e.target.checked;if(s.status==="not-started")s.status="in-progress";save();renderSidebar();};});
+ if(m.id===0){
+   (s.quizAnswers||[]).forEach((_,i)=>{ const q=document.getElementById(`q-0-${i}`); if(q) q.oninput=e=>{s.quizAnswers[i]=e.target.value;save();}; });
+   document.querySelectorAll("[data-wi]").forEach(el=>{ el.oninput=el.onchange=e=>{const i=Number(e.target.dataset.wi),field=e.target.dataset.wf;s.worksheet[i][field]=e.target.value;save();}; });
+   document.getElementById("addWorksheetRow").onclick=()=>{s.worksheet.push({step:"",owner:"D",current:"",target:"",reason:""});save();renderDetail(m);document.getElementById("worksheet").scrollIntoView();};
+   document.getElementById("copyWorksheet").onclick=async()=>{await navigator.clipboard.writeText(worksheetMarkdown(s.worksheet));toast("Worksheet copied as Markdown");};
+   document.getElementById("downloadArchitecture").onclick=()=>downloadText("architecture-v0.md",worksheetMarkdown(s.worksheet));
+   renderAdrList();
+   document.getElementById("addAdr").onclick=()=>{const title=document.getElementById("adrTitle").value.trim(),rationale=document.getElementById("adrRationale").value.trim(),consequences=document.getElementById("adrConsequences").value.trim(),status=document.getElementById("adrStatus").value;if(!title||!rationale){alert("Add at least a decision title and rationale.");return;}const n=String(Math.max(0,...state.architectureDecisions.map(d=>Number((d.id||"").replace(/\D/g,""))||0))+1).padStart(3,"0");state.architectureDecisions.push({id:`ADR-${n}`,title,status,rationale,consequences});save();renderAdrList();document.getElementById("adrTitle").value="";document.getElementById("adrRationale").value="";document.getElementById("adrConsequences").value="";};
+   document.getElementById("downloadAdr").onclick=()=>downloadText("decision-log.md",adrMarkdown());
+ }
+}
+
+function openModule(id){
+ state.currentModule=id; save();
+ location.hash=`module-${id}`;
+ document.getElementById("homeView").classList.add("hidden");
+ renderDetail(modules[id]);
+ renderSidebar();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function showHome(){
+ location.hash="";
+ document.getElementById("homeView").classList.remove("hidden");
+ document.getElementById("detailView").innerHTML="";
+ renderSidebar(); renderOutline(currentFilter,document.getElementById("searchInput").value); updateResume();
+}
+function updateProgress(){
+ const done=modules.filter(m=>state.modules[m.id].status==="done").length;
+ const pct=Math.round(100*done/modules.length);
+ document.getElementById("overallPct").textContent=pct+"%";
+ document.getElementById("overallText").textContent=`${done} / ${modules.length} modules complete`;
+ document.getElementById("overallBar").style.width=pct+"%";
+}
+function updateResume(){
+ let next=modules.find(m=>state.modules[m.id].status==="in-progress") || modules.find(m=>state.modules[m.id].status!=="done") || modules[modules.length-1];
+ document.getElementById("resumeTitle").textContent=`Module ${next.id}: ${next.title}`;
+ document.getElementById("resumeText").textContent=next.goal;
+ document.getElementById("resumeBtn").onclick=()=>openModule(next.id);
+}
+function applyTheme(){ document.documentElement.dataset.theme=state.theme; }
+let currentFilter="all";
+document.querySelectorAll("[data-filter]").forEach(btn=>btn.onclick=()=>{currentFilter=btn.dataset.filter;renderOutline(currentFilter,document.getElementById("searchInput").value);});
+document.getElementById("searchInput").oninput=e=>renderOutline(currentFilter,e.target.value);
+document.getElementById("themeBtn").onclick=()=>{state.theme=state.theme==="dark"?"light":"dark";applyTheme();save();};
+document.getElementById("exportBtn").onclick=()=>{
+ const payload={app:"Agentic Analytics Engineering",version:1,exportedAt:new Date().toISOString(),state};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`agentic-analytics-progress-${new Date().toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(a.href);
+};
+document.getElementById("importBtn").onclick=()=>document.getElementById("importDialog").showModal();
+document.getElementById("confirmImport").onclick=async()=>{
+ const f=document.getElementById("importFile").files[0]; if(!f) return;
+ try{const obj=JSON.parse(await f.text()); state=obj.state||obj; normalizeState(); save(); applyTheme(); document.getElementById("importDialog").close(); toast("Progress imported"); showHome();}
+ catch(e){alert("Could not import this file: "+e.message);}
+};
+document.getElementById("resetBtn").onclick=()=>{
+ if(confirm("Reset all course progress in this browser?")){
+   state=defaultState(); save(); applyTheme(); showHome();
+ }
+};
+window.addEventListener("hashchange",()=>{
+ const m=location.hash.match(/module-(\d+)/); if(m){const id=Number(m[1]); if(modules[id]) openModule(id);} else showHome();
+});
+
+applyTheme(); updateProgress(); updateResume(); renderSidebar(); renderOutline();
+const initial=location.hash.match(/module-(\d+)/); if(initial) openModule(Number(initial[1]));
+</script>
+</body>
+</html>

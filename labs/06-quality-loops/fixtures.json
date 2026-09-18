@@ -1,0 +1,30 @@
+{
+  "A_polished_but_wrong": {
+    "claim": "Gross margin fell 4.2 percentage points from Q1 to Q2.",
+    "expected": "NUMERIC_VERIFY_FAIL",
+    "truth_pp": -5.82
+  },
+  "B_correct_but_weak": {
+    "claim": "Gross margin fell about 5.82 percentage points.",
+    "style": "unsupported executive usefulness / missing explanation",
+    "expected": "NUMERIC_PASS_CRITIC_REVISE"
+  },
+  "C_conflicting_evidence": {
+    "evidence": [
+      {
+        "id": "e1",
+        "value": -5.82
+      },
+      {
+        "id": "e2",
+        "value": -4.2
+      }
+    ],
+    "expected": "CONFLICT_ESCALATE"
+  },
+  "D_correct_but_ungrounded": {
+    "claim": "Gross margin fell about 5.82 percentage points.",
+    "evidence_ids": [],
+    "expected": "GROUNDING_FAIL"
+  }
+}
