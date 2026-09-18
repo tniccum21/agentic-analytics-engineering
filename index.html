@@ -1355,9 +1355,9 @@ function renderStudyPlan(m,s){
  const prompts=assignments[m.id]?.sourceStudy||[];
  const b=bookStudy[m.id];
  return `<section class="section" id="study-plan-${m.id}">
-   <div class="eyebrow">One source list</div>
+   <div class="eyebrow">Step 1 · Start here</div>
    <h3 style="margin-top:5px">Study plan</h3>
-   <div class="lesson-callout"><strong>How to use this section</strong>This is the module's only reading/code-study list. Complete each required source once, then use the study prompts below to capture what matters for the lab.</div>
+   <div class="lesson-callout"><strong>Do this before the lesson checks and lab.</strong>This is the module's only reading/code-study list. Complete each required source once, then use the study prompts below to capture what matters for the exercises that follow.</div>
    ${sources.map((r,i)=>`<div class="resource">
       <input type="checkbox" id="r-${m.id}-${i}" ${s.resources[i]?"checked":""}>
       <div><div class="r-title"><a href="${r.url}" target="_blank" rel="noopener">${esc(r.title)}</a></div><div class="r-note">${esc(r.note)}</div></div>
@@ -1404,10 +1404,11 @@ function renderDetail(m){
     <div class="meta"><span class="chip">${esc(m.duration)}</span>${m.topics.map(t=>`<span class="chip">${esc(t)}</span>`).join("")}</div>
    </div>
 
+   ${renderStudyPlan(m,s)}
+
    ${m.id===0 ? renderModule0Lesson(m,s) : ""}
    ${m.id===1 ? renderModule1Lesson() : ""}
 
-   ${renderStudyPlan(m,s)}
    ${renderThroughProject(m)}
    ${renderAssignment(m,s)}
 
