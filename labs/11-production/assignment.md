@@ -2,10 +2,19 @@
 
 Prove the agentic workflow fails boundedly, observably, and safely under ten concrete production failure modes.
 
-## Source study / code archaeology
+## Study evidence
+
+Complete the module's single **Study Plan** in the course site first. This section is not an additional reading list; it specifies the observations and artifacts to capture from those sources.
 1. FREE source study: review Anthropic trustworthy/reliability guidance plus public Chapter 9 safeguard code. Extract scaling/security/validation/versioning/rollback controls. Optional book deep dive: Ch. 4 pp. 93–115 and Ch. 9 pp. 275–277.
 2. Convert each relevant safeguard into an executable chaos case or release gate; prose-only security requirements do not count.
-3. Inspect the open Chapter 9 README issue in the repo and note it in your source-quality log: documentation itself is an external dependency that can be stale or wrong.
+3. Inspect the open Chapter 9 README issue in the repo and note it in `source-quality-log.md`: documentation itself is an external dependency that can be stale or wrong.
+
+
+### Additional code-study prompts
+
+- `claude_agent_sdk/03_The_site_reliability_agent.ipynb`: revisit safety hooks and post-action verification.
+- `claude_agent_sdk/07_Hosting_the_agent.ipynb`: compare Docker, managed serverless, and Kubernetes tiers while noting which agent interface remains stable.
+- Optional: inspect `scheduled_repository_reviewer/` for bounded unattended runs, `max_turns`, `max_budget_usd`, resumable sessions, and schema-validated continuity.
 
 ## Tasks
 1. Test these cases: MCP timeout; malformed tool JSON; unavailable capability; prompt injection embedded in metadata; oversized query result; duplicate retry/idempotency; one parallel worker failure; contradictory critic verdicts; budget exhaustion; corrupt/unreadable checkpoint.
@@ -37,11 +46,6 @@ Prove the agentic workflow fails boundedly, observably, and safely under ten con
 - `source-quality-log.md`
 - `release-rollback-trace.json`
 
-## Required Anthropic cookbook study
-
-- `claude_agent_sdk/03_The_site_reliability_agent.ipynb`: revisit safety hooks and post-action verification.
-- `claude_agent_sdk/07_Hosting_the_agent.ipynb`: compare Docker, managed serverless, and Kubernetes tiers while noting which agent interface remains stable.
-- Optional: inspect `scheduled_repository_reviewer/` for bounded unattended runs, `max_turns`, `max_budget_usd`, resumable sessions, and schema-validated continuity.
 
 ## Through-project milestone — SQL Harness M11: Safe Self-Improvement
 
