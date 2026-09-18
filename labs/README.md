@@ -13,4 +13,6 @@ The site tracks the same acceptance tests as checkboxes. Mark them only after th
 
 The interactive course site presents exactly one **Study Plan** per module. That section consolidates required reading, required code study, study prompts, and optional paid enrichment. Assignment files may state the evidence to capture from those sources, but they should not introduce a second independent reading list.
 
+The Study Plan appears **before** module lessons, comprehension checks, worksheets, and programming tasks. The expected sequence is: study first, then apply.
+
 All required labs operate on course-supplied Northstar assets. A learner is never expected to arrive with an existing analytics platform, MCP server, or agent workflow.
