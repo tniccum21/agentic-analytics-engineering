@@ -2,7 +2,7 @@
 
 | Module | Project milestone | Concrete artifact |
 |---|---|---|
-| 0 | Freeze baseline and architecture | `baseline/`, `architecture-v0.md` |
+| 0 | Freeze the supplied baseline definition and target architecture; do not benchmark yet | `baseline/BASELINE.md`, `architecture-v0.md` |
 | 1 | Implement five reusable control-flow primitives | `sql_harness/patterns.py`, traces |
 | 2 | Define typed harness state/artifacts | `sql_harness/models.py` |
 | 3 | Build explicit SQL harness graph | `sql_harness/graph.py` |
