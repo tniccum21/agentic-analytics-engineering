@@ -61,7 +61,7 @@ REQUEST / ROUTER
                   ▼
         versioned champion + rollback</div></section>
 <section class="sec"><h2>What each module adds</h2><table><thead><tr><th>Module</th><th>Harness increment</th><th>Primary artifact</th></tr></thead><tbody>
-<tr><td>0</td><td>Freeze current baseline, target architecture, and initial benchmark.</td><td><code>baseline/</code>, architecture</td></tr>
+<tr><td>0</td><td>Freeze the supplied one-call baseline definition and target architecture. Inspect the starter benchmark, but do not execute it yet.</td><td><code>baseline/BASELINE.md</code>, <code>architecture-v0.md</code></td></tr>
 <tr><td>1</td><td>Five control-flow primitives: single-shot, ReAct, planner/executor, reflexive, verifier-gated.</td><td><code>patterns.py</code></td></tr>
 <tr><td>2</td><td>Typed state for request, SQL attempts, evidence, verification, evals, configuration versions.</td><td><code>models.py</code></td></tr>
 <tr><td>3</td><td>Explicit graph, routing, candidate fan-out and fan-in.</td><td><code>graph.py</code></td></tr>
