@@ -15,7 +15,7 @@ Implement five distinct agent control-flow patterns against one fixed analytics 
 5. 1E — Verifier-gated agent: implement verifier_gated(proposal, verifier, tools). The verifier runs BEFORE the action. A rejected proposal must result in zero tool executions; an approved proposal may execute exactly once.
 
 ## Fixed scenario / inputs
-- Use the bundled Northstar Retail SQLite database and mock tools. Do not connect to xFalcon/MCP yet.
+- Use the bundled Northstar Retail SQLite database and mock tools. Do not connect to the course Northstar MCP server yet; MCP is introduced in Module 4.
 - ReAct goal: ‘Which region had the largest decline in gross profit from Q1 to Q2, and by how much?’
 - Planner–executor goal: ‘Explain why gross margin declined from Q1 to Q2.’
 - Reflection fixture: a draft executive summary containing one unsupported causal claim.
