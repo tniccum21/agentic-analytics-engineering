@@ -2,10 +2,18 @@
 
 Make planning an inspectable artifact and separate semantic planning from deterministic plan validation.
 
-## Source study / code archaeology
+## Study evidence
+
+Complete the module's single **Study Plan** in the course site first. This section is not an additional reading list; it specifies the observations and artifacts to capture from those sources.
 1. FREE source study: inspect the public Chapter 5 Planning Agent/dependency execution and Anthropic orchestrator-worker material. Explain how dependency-aware execution differs from asking an LLM to narrate a plan. Optional book deep dive: Ch. 5 pp. 131–137.
 2. Inspect the Chapter 9 LLM_COMPARISON structured-output failure: cloud providers fail PlannerAgent JSON parsing. Treat this as a design requirement, not an anecdote.
 3. Write PLANNER_CONTRACT.md before coding: exact JSON schema, failure behavior, single-replan rule, and what must NEVER be silently repaired.
+
+
+### Additional code-study prompts
+
+- `claude_agent_sdk/01_The_chief_of_staff_agent.ipynb`: inspect Plan Mode, subagents, persistent instructions, and hooks. Write one paragraph distinguishing a planning artifact from authority to execute it.
+- Compare with `patterns/agents/orchestrator_workers.ipynb` and list two differences between the minimal pattern and the newer SDK-oriented implementation.
 
 ## Tasks
 1. Implement AnalysisPlan and AnalysisTask schemas with objective, success_criteria, task IDs, dependencies, required_capabilities, and parallelizable flag.
@@ -42,10 +50,6 @@ Make planning an inspectable artifact and separate semantic planning from determ
 - `PLANNER_CONTRACT.md`
 - `SOURCE_NOTES.md`
 
-## Required Anthropic cookbook study
-
-- `claude_agent_sdk/01_The_chief_of_staff_agent.ipynb`: inspect Plan Mode, subagents, persistent instructions, and hooks. Write one paragraph distinguishing a planning artifact from authority to execute it.
-- Compare with `patterns/agents/orchestrator_workers.ipynb` and list two differences between the minimal pattern and the newer SDK-oriented implementation.
 
 ## Through-project milestone — SQL Harness M5: Query Planning
 
