@@ -1,8 +1,11 @@
-"""Module 0 baseline placeholder.
+"""Frozen Module 0 comparison baseline.
 
-Freeze your current 'LLM does everything' implementation here or behind this
-interface. Do not improve it after the baseline run; later modules compare
-against the frozen version.
+This deliberately weak implementation represents the course's starting point:
+one question + schema, one model call, one raw response.
+
+Do not add planners, tools, retries, verifiers, repair loops, MCP, or other
+safeguards here. The implementation is frozen in Module 0 and executed later
+when the course has built a consistent evaluation runner.
 """
 
 
