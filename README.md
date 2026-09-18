@@ -1,6 +1,6 @@
 # Agentic Analytics Engineering — v4.3
 
-A local, project-driven course for turning an **LLM + Skills + MCP server** into a controlled agentic analytics workflow.
+A local, project-driven course for turning an **LLM + Skills + the course-supplied Northstar MCP server** into a controlled agentic analytics workflow.
 
 ## Free-course guarantee
 
@@ -71,6 +71,6 @@ Two major changes:
 
 1. **Anthropic's public `claude-cookbooks` repository is now a primary free code backbone.** The course explicitly uses the minimal pattern notebooks, current Agent SDK recipes, the Text-to-SQL guide/evaluation suite, session/MCP/safety/hosting recipes, and benchmark examples. See `ANTHROPIC_CODE_MAP.md`.
 
-2. **Every module now advances one through-project:** a self-improving SQL generation agentic harness. The project starts with a frozen “LLM does everything” baseline and ends with a verifier-gated, durable, MCP-capable harness plus a versioned champion/challenger improvement loop. See `project.html` and `project/PROJECT_SPEC.md`.
+2. **Every module now advances one through-project:** a self-improving SQL generation agentic harness. The project starts with a frozen “LLM does everything” baseline and ends with a verifier-gated, durable, MCP-capable harness plus a versioned champion/challenger improvement loop. The MCP portion uses only the repository's own Northstar MCP server; no personal or enterprise analytics MCP server is part of the course. See `project.html` and `project/PROJECT_SPEC.md`.
 
 “Self-improving” is deliberately controlled: the production champion never silently edits itself. Failures generate improvement proposals; challengers are evaluated offline; hard safety/correctness gates and approval control promotion; every promoted version is reversible.
