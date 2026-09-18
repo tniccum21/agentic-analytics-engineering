@@ -86,7 +86,7 @@ Inspect the **course-supplied Northstar baseline** in `project/00-baseline.md` a
 - T = tool/capability
 - S = Skill/domain expertise
 
-Then redesign it as an explicit target architecture. No pre-existing learner system is assumed.
+Then redesign it as an explicit target architecture. No pre-existing learner system is assumed. The Module 0 worksheet is intentionally blank apart from its column headings; identifying the baseline steps, assigning D/L/T/S ownership, and proposing the target behavior are learner work.
 
 **Architecture decision record (ADR) log**
 
