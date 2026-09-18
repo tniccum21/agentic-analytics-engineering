@@ -293,7 +293,7 @@ const modules = [
  ],
  lab:{
   title:"Create the capability boundary map",
-  description:"Inventory existing MCP functions and Skills and decide what belongs in MCP, resources, Skills, or the workflow engine.",
+  description:"Inventory the course Northstar MCP functions and decide what belongs in MCP, resources/context, Skills, or the workflow engine.",
   deliverable:"capability-map.md",
   checklist:["Every MCP capability has a clear contract","Skills contain expertise/policy rather than execution control","Retry and iteration limits live outside MCP tools","Context/resources are separated from actions","Workflow engine can swap tool implementations"],
   rubric:["No capability layer secretly owns the outer loop","Tool schemas are narrow and testable","Skills are reusable across nodes","Boundary makes mocking/testing possible"]
@@ -346,9 +346,9 @@ const modules = [
  ],
  lab:{
   title:"First end-to-end analytics vertical slice",
-  description:"Connect the workflow graph to the real MCP server: question → plan → metadata/data → analysis → visualization → critique → revision → narrative.",
+  description:"Connect the workflow graph to the course-supplied Northstar MCP server: question → plan → metadata/data → analysis → visualization → critique → revision → narrative.",
   deliverable:"vertical_slice_v1/",
-  checklist:["Real MCP server is used","Every factual claim can be traced to retrieved data","Visualization is generated from the same evidence set","Critique loop is active","Final output includes provenance/debug trace"],
+  checklist:["Course-supplied Northstar MCP server is used","Every factual claim can be traced to retrieved data","Visualization is generated from the same evidence set","Critique loop is active","Final output includes provenance/debug trace"],
   rubric:["Workflow answers a real business question end to end","Tool failures degrade gracefully","Claims and charts stay grounded in source data","Intermediate state is inspectable"]
  }
 },
@@ -568,7 +568,7 @@ const assignments = {
       "1E — Verifier-gated agent: implement verifier_gated(proposal, verifier, tools). The verifier runs BEFORE the action. A rejected proposal must result in zero tool executions; an approved proposal may execute exactly once."
     ],
     "fixed": [
-      "Use the bundled Northstar Retail SQLite database and mock tools. Do not connect to xFalcon/MCP yet.",
+      "Use the bundled Northstar Retail SQLite database and mock tools. Do not connect to the course Northstar MCP server yet; MCP is introduced in Module 4.",
       "ReAct goal: ‘Which region had the largest decline in gross profit from Q1 to Q2, and by how much?’",
       "Planner–executor goal: ‘Explain why gross margin declined from Q1 to Q2.’",
       "Reflection fixture: a draft executive summary containing one unsupported causal claim.",
@@ -685,9 +685,9 @@ const assignments = {
     "tasks": [
       "Create AnalyticsCapabilities with get_schema(table), run_readonly_query(sql), and render_chart(spec).",
       "Implement LocalNorthstarAdapter against the bundled SQLite data.",
-      "Implement MCPAnalyticsAdapter whose methods map to your MCP client, but normalize outputs/errors to the same local interface.",
+      "Implement MCPAnalyticsAdapter against the course-supplied Northstar MCP server, normalizing outputs/errors to the same local interface.",
       "Classify 12 supplied concerns as control plane, agent harness, MCP/tool, resource/context, or Skill.",
-      "Run the same analysis function against the local adapter and MCP adapter without changing analysis code."
+      "Run the same analysis function against the direct SQLite adapter and the Northstar MCP adapter without changing analysis code."
     ],
     "fixed": [
       "retry count, max revisions, task scheduling, and checkpoint policy are NOT allowed inside the adapter",
@@ -796,7 +796,7 @@ const assignments = {
   },
   "7": {
     "title": "End-to-End Analytics Vertical Slice",
-    "objective": "Assemble the learned patterns into one complete evidence-grounded analytics workflow, first on the bundled dataset and then through your MCP adapter.",
+    "objective": "Assemble the learned patterns into one complete evidence-grounded analytics workflow, first through the direct SQLite adapter and then through the course-supplied Northstar MCP server.",
     "sourceStudy": [
           "FREE REQUIRED: Work through the Phoenix talk-to-your-data example and inspect the Data Analysis, V&V, and Tri-Agent Pipeline sections in the public Ch. 8 simulation notebook.",
           "Create PIPELINE_MAPPING.md mapping book stages to our Planner/Workers → Verifiers/Critics → reanalysis/escalation architecture.",
@@ -806,7 +806,7 @@ const assignments = {
       "Answer exactly: ‘Why did gross margin fall from Q1 to Q2, and which region contributed most?’",
       "Planner creates structured tasks; workers retrieve data; analysis emits Findings with evidence IDs; chart generator emits one visualization spec; verifier recomputes key numeric claims; critics review narrative and chart; finalizer consumes approved artifacts only.",
       "Run Part A against Northstar Retail.",
-      "Run Part B by swapping only the capability adapter to your real MCP-backed source and choose one analogous known-answer question from that system."
+      "Run Part B against the same Northstar Retail dataset through the course-supplied Northstar MCP server by swapping only the capability adapter."
     ],
     "fixed": [
       "Northstar truth: Q1 margin 41.8%; Q2 margin ≈35.98%; change ≈-5.82 percentage points; West gross profit changes 178→148 (-30), the largest negative contribution."
@@ -821,12 +821,12 @@ const assignments = {
       "West is correctly identified as largest negative GP contributor",
       "At least one chart passes visualization critic",
       "Verifier passes every numeric claim in final answer",
-      "MCP-backed run completes with same graph/control flow"
+      "Northstar MCP-backed run completes with same graph/control flow"
     ],
     "deliverables": [
       "vertical_slice/",
-      "northstar_run.json",
-      "mcp_run.json",
+      "northstar_sqlite_run.json",
+      "northstar_mcp_run.json",
       "final_report.md",
       "one chart artifact/spec"
     ],
@@ -1254,7 +1254,7 @@ function renderModule0Lesson(m,s){
     <div class="checklist">
       <label><input type="checkbox"> <span>What should be durable application/session state versus ephemeral model context?</span></label>
       <label><input type="checkbox"> <span>Where should our control plane stop and an autonomous agent harness begin?</span></label>
-      <label><input type="checkbox"> <span>Which existing xFalcon MCP capabilities are “hands” that should remain replaceable?</span></label>
+      <label><input type="checkbox"> <span>Which Northstar MCP capabilities are “hands” that should remain replaceable behind stable interfaces?</span></label>
       <label><input type="checkbox"> <span>Which of the older workflow patterns still maps directly to our analytics process?</span></label>
       <label><input type="checkbox"> <span>Where would a bounded evaluator/optimizer loop improve quality measurably?</span></label>
     </div>
