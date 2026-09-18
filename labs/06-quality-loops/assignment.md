@@ -2,10 +2,18 @@
 
 Demonstrate that quality critique and correctness verification are different mechanisms with different authority.
 
-## Source study / code archaeology
+## Study evidence
+
+Complete the module's single **Study Plan** in the course site first. This section is not an additional reading list; it specifies the observations and artifacts to capture from those sources.
 1. FREE source study: study Anthropic evaluator-optimizer and inspect Verification & Validation / `tri_agent_pipeline` in the public Chapter 8 simulation notebook. Optional book deep dive: Ch. 8 pp. 211–215 and 231–232.
 2. Diagram trust-then-escalate: candidate finding → verification → verified OR flagged → resolver/escalation. Contrast it with generate → critic → revise.
 3. FREE source study: inspect public `chapter09/self_improving.py` and note why an improvement proposal is not itself evidence that the system improved. Optional book deep dive: Ch. 9 pp. 265–277.
+
+
+### Additional code-study prompts
+
+- `patterns/agents/evaluator_optimizer.ipynb`: identify the evaluator output, revision input, and exit condition.
+- `claude_agent_sdk/08_Dynamic_workflows.ipynb`: inspect fan-out verification and skeptic/adversarial checking. Explain why an independent verifier is not the same thing as a reflective critic.
 
 ## Tasks
 1. Implement AnalysisCritic producing rubric scores for evidence support, alternative explanations, causal language, completeness, and executive usefulness.
@@ -42,10 +50,6 @@ Demonstrate that quality critique and correctness verification are different mec
 - `test_quality_loop.py`
 - `SOURCE_NOTES.md`
 
-## Required Anthropic cookbook study
-
-- `patterns/agents/evaluator_optimizer.ipynb`: identify the evaluator output, revision input, and exit condition.
-- `claude_agent_sdk/08_Dynamic_workflows.ipynb`: inspect fan-out verification and skeptic/adversarial checking. Explain why an independent verifier is not the same thing as a reflective critic.
 
 ## Through-project milestone — SQL Harness M6: Verification and Repair
 
