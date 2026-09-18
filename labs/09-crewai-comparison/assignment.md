@@ -3,7 +3,7 @@
 Evaluate multi-agent collaboration empirically rather than assuming more agents are better.
 
 ## Tasks
-1. Implement the same Northstar diagnostic in Version A using your LangGraph planner/workers and Version B using a CrewAI Flow/Crew with region/data specialists.
+1. Implement the same Northstar diagnostic in Version A using the LangGraph planner/workers built in earlier modules and Version B using a CrewAI Flow/Crew with region/data specialists.
 2. Run each version 5 times on the same model/settings.
 3. Record answer correctness, number of model calls, tool calls, wall time, tokens/cost if available, and trace complexity.
 4. Write a decision memo: keep, restrict, or remove the multi-agent approach for this use case.
@@ -40,7 +40,7 @@ Rebuild only the candidate-generation/verification segment using CrewAI (or a Cr
 - coordinator/Flow.
 
 Run the same 10 benchmark cases through:
-A. existing LangGraph/control-plane implementation;
+A. the course LangGraph/control-plane implementation;
 B. CrewAI variant.
 
 ### Measure
