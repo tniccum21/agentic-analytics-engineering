@@ -1048,11 +1048,11 @@ function moduleStudySources(m){
     }
     byUrl.set(url,{title,url,note:note||"",kind:kind||"reading"});
   };
-  (m.resources||[]).forEach(r=>add(r.title,r.url,r.note,"reading"));
+  (m.resources||[]).forEach(r=>add(r.title,r.url,r.note,/github\.com|notebook|code study/i.test((r.url||"")+" "+(r.note||""))?"code":"reading"));
   const code=anthropicCookbookStudy[m.id];
   (code?.items||[]).forEach(x=>add(x[0],x[1],x[2],"code"));
   const free=bookStudy[m.id];
-  (free?.free||[]).forEach(x=>add(x[0],x[1],x[2],"reading"));
+  (free?.free||[]).forEach(x=>add(x[0],x[1],x[2],/github\.com|notebook|code/i.test((x[1]||"")+" "+(x[2]||""))?"code":"reading"));
   return [...byUrl.values()];
 }
 
@@ -1347,7 +1347,7 @@ function renderStudyPlan(m,s){
       <div><div class="r-title"><a href="${r.url}" target="_blank" rel="noopener">${esc(r.title)}</a></div><div class="r-note">${esc(r.note)}</div></div>
       <span class="chip">${r.kind==="code"?"code study":"reading"}</span>
    </div>`).join("")}
-   ${prompts.length?`<h4>What to capture from the study</h4><ol>${prompts.map(x=>`<li>${esc(x.replace(/^FREE (?:REQUIRED|source study):?\s*/i,""))}</li>`).join("")}</ol><div style="font-size:12px;color:var(--muted)">Record these observations in <code>SOURCE_NOTES.md</code> when the assignment calls for it.</div>`:""}
+   ${prompts.length?`<h4>What to capture from the study</h4><ol>${prompts.map(x=>`<li>${esc(x.replace(/^FREE (?:REQUIRED|source study|code archaeology):?\s*/i,""))}</li>`).join("")}</ol><div style="font-size:12px;color:var(--muted)">Record these observations in <code>SOURCE_NOTES.md</code> when the assignment calls for it.</div>`:""}
    ${b?`<div class="book-map-box"><div><div class="book-pages">Optional Packt enrichment: ${esc(b.optionalPages)}</div><div style="font-size:12px;color:var(--muted)">${esc(b.optionalSections)}</div></div><div class="book-note">${esc(b.optionalNote)}</div></div>`:""}
    <div style="font-size:12px;color:var(--muted)">No paid chapter is required for the module, assignment, or self-grade.</div>
  </section>`;
