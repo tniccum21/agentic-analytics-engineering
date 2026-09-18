@@ -2,10 +2,18 @@
 
 Implement three workflow combinators in LangGraph and observe how explicit state/edges replace hand-written loop control.
 
-## Source study / code archaeology
+## Study evidence
+
+Complete the module's single **Study Plan** in the course site first. This section is not an additional reading list; it specifies the observations and artifacts to capture from those sources.
 1. FREE source study: inspect `ManagerAgent` and `workflow_manager_agent` in the public Chapter 7 simulation notebook and review the required LangGraph routing/parallelization lesson. Optional book deep dive: Ch. 7 pp. 186–200.
 2. Extract three ideas only: specialist delegation, shared/aggregated state, and guard/HITL transitions. Re-express those as LangGraph nodes/edges rather than copying the classes.
-3. In SOURCE_NOTES.md, identify one behavior in the Packt manager that should remain agentic and one that should become deterministic graph control in our analytics system.
+3. In SOURCE_NOTES.md, identify one behavior in the Packt manager that should remain agentic and one that should become deterministic graph control in the course SQL harness.
+
+
+### Additional code-study prompts
+
+- `claude_agent_sdk/08_Dynamic_workflows.ipynb`: answer the notebook's central architectural question for the course SQL harness: **who should hold the plan, model context or deterministic workflow code?**
+- Inspect `agent()`, `parallel()`, `pipeline()`, phases, and structured outputs. Map each to one LangGraph construct before coding.
 
 ## Tasks
 1. Graph A Router: route lookup, diagnostic, and report requests to three different nodes from a structured RouteDecision.
@@ -35,10 +43,6 @@ Implement three workflow combinators in LangGraph and observe how explicit state
 - `graph-trace.json`
 - `graph-diagram.md`
 
-## Required Anthropic cookbook study
-
-- `claude_agent_sdk/08_Dynamic_workflows.ipynb`: answer the notebook's central architectural question for our SQL harness: **who should hold the plan, model context or deterministic workflow code?**
-- Inspect `agent()`, `parallel()`, `pipeline()`, phases, and structured outputs. Map each to one LangGraph construct before coding.
 
 ## Through-project milestone — SQL Harness M3: Explicit Graph
 
