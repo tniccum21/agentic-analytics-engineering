@@ -221,11 +221,11 @@ const modules = [
   {title:"Anthropic cookbook — Claude Agent SDK recipes", url:"https://github.com/anthropics/claude-cookbooks/tree/main/claude_agent_sdk", note:"CURRENT FREE CODE BACKBONE: MCP, sessions, safety hooks, subagents, dynamic workflows, deployment, and production agent patterns."}
  ],
  lab:{
-  title:"Map the current system",
-  description:"Inventory your current analytics path and label each meaningful action as deterministic code (D), LLM judgment (L), tool/MCP capability (T), or Skill/domain expertise (S).",
+  title:"Map and redesign the supplied baseline",
+  description:"Inspect the course-supplied Northstar baseline, classify each meaningful action as deterministic code (D), LLM judgment (L), tool/capability (T), or Skill/domain expertise (S), then propose an explicit target architecture.",
   deliverable:"architecture-v0.md",
-  checklist:["Current path is documented end to end","Every major action has a D/L/T/S owner","Decisions that should move out of the LLM are identified","Target architecture shows explicit workflow control","At least 3 failure/stop conditions are represented"],
-  rubric:["Correctly separates workflow control from model judgment","Identifies MCP as capability layer rather than outer orchestrator","Makes state/loop ownership explicit","Architecture is implementable, not just conceptual"]
+  checklist:["Supplied baseline is documented end to end","Every major baseline action has a D/L/T/S owner","Implicit model-owned lifecycle decisions are identified","Target architecture shows explicit workflow control","At least 3 failure/stop conditions are represented"],
+  rubric:["Correctly separates workflow control from model judgment","Uses the supplied Northstar baseline rather than assuming a pre-existing learner system","Identifies MCP as a capability layer rather than the outer orchestrator","Makes state/loop ownership explicit","Architecture is implementable, not just conceptual"]
  }
 },
 {
@@ -479,14 +479,14 @@ const anthropicCookbookStudy = {
 };
 
 const throughProject = {
-  0:{title:"Freeze the baseline", build:"Run the 12 starter benchmark cases through the current 'LLM does everything' approach. Freeze prompt/model/configuration and record failures before adding any safeguards.", files:["project/00-baseline.md","project/benchmark/baseline_cases.jsonl","baseline/BASELINE.md"], gate:"No cherry-picking; unsafe and ambiguous cases remain in the baseline."},
+  0:{title:"Freeze the baseline", build:"Run the 12 starter benchmark cases through the course-supplied minimal 'LLM does everything' baseline. Freeze prompt/model/configuration and record failures before adding any safeguards.", files:["project/00-baseline.md","project/benchmark/baseline_cases.jsonl","baseline/BASELINE.md"], gate:"No cherry-picking; unsafe and ambiguous cases remain in the baseline."},
   1:{title:"Install five pattern primitives", build:"Implement single-shot routing, ReAct, planner/executor, reflexive repair, and verifier-gating as reusable SQL-harness primitives using fake tools.", files:["project/sql_harness/patterns.py","project/tests/test_patterns.py"], gate:"Write SQL fixtures can never reach the fake executor."},
   2:{title:"Create the harness state contract", build:"Make SQL attempts, verification records, results/evidence, claims, metrics, and configuration versions first-class typed artifacts.", files:["project/sql_harness/models.py","project/tests/test_models.py"], gate:"Settled claims without evidence and invalid attempt numbers fail validation."},
   3:{title:"Build the explicit SQL graph", build:"Implement request → route → context → generate → verify → execute → verify result → finalize, with clarification, bounded repair, and a 2-candidate fan-out experiment.", files:["project/sql_harness/graph.py"], gate:"The execution node must be unreachable unless SQL verification passes."},
   4:{title:"Make the hands replaceable", build:"Put schema discovery and SQL execution behind adapters. Implement SQLite now and MCP with the same contract.", files:["project/sql_harness/adapters/"], gate:"Switching SQLite↔MCP changes configuration, not graph code."},
   5:{title:"Add structured analytical planning", build:"Bypass planning for simple lookups; create typed dependency plans for comparisons/diagnostics; ask for clarification on vague requests.", files:["project/sql_harness/planner.py"], gate:"Malformed planner output never silently becomes executable work."},
   6:{title:"Add verifier-gated repair", build:"Implement pre-exec SQL verification, result checks, and evidence/claim verification. Feed structured failures to a maximum-two-repair loop.", files:["project/sql_harness/verification.py"], gate:"A critic can suggest improvements but cannot override a hard verifier rejection."},
-  7:{title:"Run the first complete harness", build:"Execute the fixed Northstar diagnostic question end-to-end, then swap only the capability adapter and run an analogous known-answer MCP question.", files:["runs/northstar/","runs/mcp/"], gate:"Every settled numeric claim is evidence-backed and verified."},
+  7:{title:"Run the first complete harness", build:"Execute the fixed Northstar diagnostic question end-to-end twice against the same bundled data: once through direct SQLite and once through the course Northstar MCP server. Only the adapter changes.", files:["runs/northstar/sqlite/","runs/northstar/mcp/"], gate:"Both paths settle on equivalent verified numeric results; every settled numeric claim is evidence-backed."},
   8:{title:"Make runs durable", build:"Checkpoint state, resume without duplicate execution, interrupt for clarification, and inspect session history without invoking the model.", files:["project/sql_harness/persistence.py"], gate:"Crash-after-execute then resume produces zero duplicate SQL executions."},
   9:{title:"Test whether multi-agent helps", build:"Rebuild only generator+verifier using CrewAI and compare it with the existing control-plane implementation on the same cases.", files:["project/multi_agent_decision.md"], gate:"Keep multi-agent only if measurements justify it."},
   10:{title:"Freeze the regression suite", build:"Expand to ≥25 cases and add deterministic safety, result-equivalence, grounding, and selected trajectory graders.", files:["project/benchmark/","project/sql_harness/evals.py"], gate:"A deliberately introduced regression must cause the suite to fail."},
@@ -875,7 +875,7 @@ const assignments = {
     "objective": "Evaluate multi-agent collaboration empirically rather than assuming more agents are better.",
     "sourceStudy": [
           "FREE REQUIRED: Review CrewAI Flows vs Crews and inspect ManagerAgent/shared memory/conflict resolution in the public Ch. 7 simulation notebook.",
-          "Write an explicit hypothesis for what multi-agent specialization should improve in our analytics task (quality, latency, conflict detection, etc.).",
+          "Write an explicit hypothesis for what multi-agent specialization should improve in the supplied Northstar task (quality, latency, conflict detection, etc.).",
           "Define the measurement that would cause you to remove the Crew/multi-agent layer again."
     ],
     "tasks": [
@@ -1037,20 +1037,35 @@ const assignments = {
   }
 };
 
+function moduleStudySources(m){
+  const byUrl=new Map();
+  const add=(title,url,note,kind)=>{
+    if(!url)return;
+    const existing=byUrl.get(url);
+    if(existing){
+      if(kind==="code") existing.kind="code";
+      return;
+    }
+    byUrl.set(url,{title,url,note:note||"",kind:kind||"reading"});
+  };
+  (m.resources||[]).forEach(r=>add(r.title,r.url,r.note,"reading"));
+  const code=anthropicCookbookStudy[m.id];
+  (code?.items||[]).forEach(x=>add(x[0],x[1],x[2],"code"));
+  const free=bookStudy[m.id];
+  (free?.free||[]).forEach(x=>add(x[0],x[1],x[2],"reading"));
+  return [...byUrl.values()];
+}
+
 const KEY = "agenticAnalyticsCourseProgressV41";
 const defaultWorksheet = () => ([
-  {step:"User asks a business/data-analysis question", owner:"L", current:"LLM interprets the request and decides what to do next.", target:"LLM interprets intent; workflow state records the request.", reason:"Judgment is useful, but the request must become explicit state."},
-  {step:"Choose analysis approach / decompose work", owner:"L", current:"LLM implicitly decides subtasks in its own context.", target:"LLM emits a typed AnalysisPlan; code validates it.", reason:"Planning benefits from model judgment, while validity should be deterministic."},
-  {step:"Determine which tasks/stages are ready to run", owner:"D", current:"LLM effectively owns most sequencing.", target:"Control plane evaluates stage/task dependencies; an agent harness may choose tool actions within an active stage.", reason:"High-level lifecycle is explicit while useful local autonomy is preserved."},
-  {step:"Retrieve governed metadata / KPI definitions", owner:"T", current:"LLM calls existing MCP capabilities.", target:"Workflow nodes call MCP resources/tools through explicit interfaces.", reason:"MCP should expose capabilities/context, not own the outer loop."},
-  {step:"Retrieve/query enterprise data", owner:"T", current:"LLM calls MCP/server tools to get data.", target:"Task node executes MCP tool with retries, typed result, provenance.", reason:"Execution belongs to capability layer; retry policy belongs to workflow."},
-  {step:"Interpret data / generate findings", owner:"L", current:"LLM analyzes tool output.", target:"Specialized analysis node produces structured Findings linked to evidence.", reason:"Interpretation requires judgment and domain reasoning."},
-  {step:"Choose visualization", owner:"L", current:"LLM chooses chart directly.", target:"LLM/Skill proposes visualization spec; deterministic validator checks constraints.", reason:"Chart choice benefits from judgment; validity and rendering constraints do not."},
-  {step:"Render visualization", owner:"T", current:"LLM directs rendering.", target:"Rendering is a tool/capability call from a workflow node.", reason:"Rendering is execution, not orchestration."},
-  {step:"Critique analysis and visualization", owner:"L", current:"LLM may self-critique informally.", target:"Dedicated rubric-based critics return structured critiques.", reason:"Evaluation benefits from model judgment when criteria are explicit."},
-  {step:"Decide whether a stage may continue / revise / exit", owner:"D", current:"LLM decides when it is satisfied.", target:"Control plane evaluates critic verdict/score, stage budget, and max-iteration rules.", reason:"Autonomous inner loops must remain bounded by explicit lifecycle criteria."},
-  {step:"Revise work", owner:"L", current:"Same LLM edits its prior output.", target:"Revision node applies specific critique to the relevant artifact.", reason:"Revision is generative work; the workflow decides when it occurs."},
-  {step:"Assemble final answer / report", owner:"L", current:"LLM produces final output from conversation context.", target:"Finalizer consumes approved state artifacts only.", reason:"Final synthesis is model work, but should operate on validated state."}
+  {step:"Receive question + Northstar schema", owner:"D", current:"The course runner supplies one question and the Northstar schema to the baseline model call.", target:"UserRequest and SchemaContext become explicit typed state.", reason:"Inputs should be inspectable and reproducible rather than hidden in conversational context."},
+  {step:"Interpret request", owner:"L", current:"The baseline model interprets the question inside a single call.", target:"Model interpretation remains useful, but the result becomes an explicit route/request artifact.", reason:"Semantic interpretation benefits from model judgment; downstream control should not remain implicit."},
+  {step:"Choose approach / propose SQL", owner:"L", current:"The baseline model decides what analysis or SQL to produce without a typed plan or independent checks.", target:"Simple requests route directly; complex requests may produce a typed plan before SQL generation.", reason:"Planning can remain model-driven while its structure and validity become inspectable."},
+  {step:"Authorize execution", owner:"D", current:"The minimal baseline has no independent pre-execution verifier contract.", target:"Deterministic/verifier gates must pass before any SQL reaches an executor.", reason:"The generator should not be the authority that approves its own action."},
+  {step:"Execute data access", owner:"T", current:"Baseline evaluation may execute proposed SQL only through the course runner when the case calls for it.", target:"Execution occurs behind replaceable read-only SQLite/MCP adapters with typed results.", reason:"Execution is a capability; transport should be replaceable without changing orchestration."},
+  {step:"Check results / ground claims", owner:"D", current:"The baseline has no required result verifier or evidence contract.", target:"Result and claim verifiers connect settled numeric statements to query evidence.", reason:"A plausible answer is not sufficient evidence of correctness."},
+  {step:"Decide to retry / revise / stop", owner:"D", current:"The supplied baseline has no repair loop; one model response is recorded as-is.", target:"Code owns explicit attempt budgets, retry/revision limits, and terminal states.", reason:"Lifecycle and convergence must be bounded and observable."},
+  {step:"Produce final answer", owner:"L", current:"The baseline model response is preserved as the final raw output.", target:"A finalizer consumes only approved state artifacts and verified evidence.", reason:"Final synthesis is model work, but it should operate on validated state."}
 ]);
 
 const defaultState = () => ({
@@ -1064,7 +1079,7 @@ const defaultState = () => ({
   ],
   modules:Object.fromEntries(modules.map(m=>[m.id,{
     status:"not-started",
-    resources:Array(m.resources.length).fill(false),
+    resources:Array(moduleStudySources(m).length).fill(false),
     checklist:Array(m.lab.checklist.length).fill(false),
     notes:"",
     labEvidence:"",
@@ -1083,8 +1098,8 @@ function normalizeState(){
   if(!state.modules) state.modules={};
   modules.forEach(m=>{
     state.modules[m.id]=Object.assign(fresh.modules[m.id],state.modules[m.id]||{});
-    if(!Array.isArray(state.modules[m.id].resources) || state.modules[m.id].resources.length!==m.resources.length)
-      state.modules[m.id].resources=Array(m.resources.length).fill(false);
+    if(!Array.isArray(state.modules[m.id].resources) || state.modules[m.id].resources.length!==moduleStudySources(m).length)
+      state.modules[m.id].resources=Array(moduleStudySources(m).length).fill(false);
     if(!Array.isArray(state.modules[m.id].checklist) || state.modules[m.id].checklist.length!==m.lab.checklist.length)
       state.modules[m.id].checklist=Array(m.lab.checklist.length).fill(false);
     const acount=(assignments[m.id]?.acceptance||[]).length;
@@ -1093,6 +1108,8 @@ function normalizeState(){
     if(m.id===0){
       if(!Array.isArray(state.modules[m.id].quizAnswers) || state.modules[m.id].quizAnswers.length!==4) state.modules[m.id].quizAnswers=["","","",""];
       if(!Array.isArray(state.modules[m.id].worksheet) || state.modules[m.id].worksheet.length===0) state.modules[m.id].worksheet=defaultWorksheet();
+      const legacyWorksheet=state.modules[m.id].worksheet.some(r=>/enterprise data|existing MCP capabilities|current system/i.test(String(r.step)+" "+String(r.current)));
+      if(legacyWorksheet) state.modules[m.id].worksheet=defaultWorksheet();
     }
   });
   if(!Array.isArray(state.architectureDecisions)) state.architectureDecisions=defaultState().architectureDecisions;
@@ -1108,7 +1125,7 @@ function esc(s){ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&
 function statusLabel(s){ return s==="done"?"Done":s==="in-progress"?"In progress":"Not started"; }
 function modulePct(m){
  const s=state.modules[m.id], ac=s.assignmentChecks||[];
- const total=m.resources.length+m.lab.checklist.length+ac.length+1;
+ const total=moduleStudySources(m).length+m.lab.checklist.length+ac.length+1;
  const done=s.resources.filter(Boolean).length+s.checklist.filter(Boolean).length+ac.filter(Boolean).length+(s.status==="done"?1:0);
  return Math.round(100*done/Math.max(1,total));
 }
@@ -1188,7 +1205,7 @@ function renderModule0Lesson(m,s){
    <section class="section" id="lesson">
     <h3>Lesson 0 — What are we actually building?</h3>
     <div class="lesson-nav">
-      <a href="#mental-model">Mental model</a><a href="#patterns">Patterns</a><a href="#reading-guide">Reading guide</a><a href="#checks">Checks</a><a href="#worksheet">Architecture worksheet</a><a href="#adr">Decision log</a>
+      <a href="#mental-model">Mental model</a><a href="#patterns">Patterns</a><a href="#checks">Checks</a><a href="#worksheet">Architecture worksheet</a><a href="#adr">Decision log</a>
     </div>
     <div class="lesson-callout"><strong>Course thesis</strong>Move lifecycle and workflow boundaries out of implicit LLM behavior and into an explicit control plane, while allowing an agent harness to run autonomous model↔tool loops inside bounded stages where judgment, planning, analysis, critique, and adaptation add value.</div>
     <h4 id="mental-model">1. Workflow vs. agent</h4>
@@ -1238,61 +1255,40 @@ function renderModule0Lesson(m,s){
     <h4>4. What should remain model-driven?</h4>
     <p>Do not over-correct and turn the system into a rigid pipeline. We still want an LLM to ask: What analyses are likely to explain this change? Which slice is interesting? Is the evidence sufficient? Is the visualization useful? What should be investigated next?</p>
     <p>The goal is not “less LLM.” It is <strong>better placement of LLM judgment</strong>.</p>
-    <h4 id="reading-guide">5. Reading guide — current Anthropic architecture first</h4>
-    <div class="lesson-callout">
-      <strong>Important 2026 update</strong>
-      Anthropic now flags <em>Building Effective Agents</em> (December 2024) as describing a tooling landscape that has changed. We will keep it for its durable pattern vocabulary, but it is no longer the primary architecture reading.
-    </div>
-    <p><strong>Read in this order:</strong></p>
-    <ol>
-      <li><a href="https://www.anthropic.com/engineering/managed-agents" target="_blank" rel="noopener"><strong>Scaling Managed Agents: Decoupling the brain from the hands</strong></a> — understand <em>session</em>, <em>harness</em>, and <em>sandbox/tools</em> as separable interfaces.</li>
-      <li><a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank" rel="noopener"><strong>Claude Managed Agents overview</strong></a> — understand the current Agent + Environment + Session + Events model and when Anthropic recommends a managed harness versus a custom loop.</li>
-      <li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noopener"><strong>Effective context engineering for AI agents</strong></a> — focus on how tools, MCP, external data, prompts, and history become curated context rather than an ever-growing transcript.</li>
-      <li><a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener"><strong>Building Effective Agents</strong></a> — now read this as a pattern catalog: chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer.</li>
-    </ol>
-    <p>While reading, answer these:</p>
-    <div class="checklist">
-      <label><input type="checkbox"> <span>What should be durable application/session state versus ephemeral model context?</span></label>
-      <label><input type="checkbox"> <span>Where should our control plane stop and an autonomous agent harness begin?</span></label>
-      <label><input type="checkbox"> <span>Which Northstar MCP capabilities are “hands” that should remain replaceable behind stable interfaces?</span></label>
-      <label><input type="checkbox"> <span>Which of the older workflow patterns still maps directly to our analytics process?</span></label>
-      <label><input type="checkbox"> <span>Where would a bounded evaluator/optimizer loop improve quality measurably?</span></label>
-    </div>
-    <h4 id="checks">6. Comprehension checks</h4>
+    <h4 id="checks">5. Comprehension checks</h4>
+
     <div class="quiz-q"><strong>Q1.</strong> Why is “the LLM decides whether it is done” a weak production boundary?<textarea id="q-0-0" placeholder="Answer in 2–4 sentences.">${esc(q[0])}</textarea></div>
-    <div class="quiz-q"><strong>Q2.</strong> Give one example from your system where the LLM should keep autonomy, and one where code should take over.<textarea id="q-0-1" placeholder="One L example, one D example.">${esc(q[1])}</textarea></div>
+    <div class="quiz-q"><strong>Q2.</strong> In the supplied Northstar baseline, name one decision that should remain model-driven and one lifecycle decision that should become code-owned.<textarea id="q-0-1" placeholder="One L example, one D example.">${esc(q[1])}</textarea></div>
     <div class="quiz-q"><strong>Q3.</strong> Why is MCP best treated as a capability boundary rather than the outer workflow engine?<textarea id="q-0-2" placeholder="Focus on responsibility and lifecycle.">${esc(q[2])}</textarea></div>
     <div class="quiz-q"><strong>Q4.</strong> What is the difference between a critic producing feedback and the workflow deciding whether to revise?<textarea id="q-0-3" placeholder="Explain evaluator judgment vs deterministic control.">${esc(q[3])}</textarea></div>
    </section>
    <section class="section" id="worksheet">
-     <h3>Lab 0 worksheet — Map the current system</h3>
-     <p style="color:var(--muted)">Pre-seeded from our current understanding. Edit the <strong>Current behavior</strong> column to match the implementation exactly before accepting the target design.</p>
-     <div class="diagram">USER QUESTION
-     │
-     ▼
-  LLM interprets request
-     │
-     ▼
-  LLM implicitly plans / sequences work
-     │
-     ├── Skills / analysis methods
-     │
-     └── MCP tools/resources ──► data / SQL / metadata / rendering
-     │
-     ▼
-  LLM analyzes + visualizes
-     │
-     ▼
-  LLM critiques / edits itself
-     │
-     ▼
-  LLM decides it is finished
+     <h3>Lab 0 worksheet — Map and redesign the supplied baseline</h3>
+     <p style="color:var(--muted)">Use the course artifacts <code>project/00-baseline.md</code>, <code>project/sql_harness/baseline.py</code>, and the bundled Northstar schema. The baseline is intentionally weak; the task is to identify where explicit control, state, verification, and capability boundaries should be introduced.</p>
+     <div class="diagram">COURSE-SUPPLIED BASELINE
+
+USER QUESTION + NORTHSTAR SCHEMA
+             │
+             ▼
+      ONE MODEL CALL
+             │
+             ▼
+        RAW RESPONSE
+   (SQL / answer / rationale)
+             │
+             ▼
+     BASELINE RUN RECORD
+
+No typed plan
+No independent SQL verifier
+No evidence contract
+No repair/retry loop
 
 TARGET DIRECTION:
-LLM judgment inside nodes
-        +
-explicit workflow state / routing / iteration limits outside the LLM</div>
-     <div style="overflow:auto;margin-top:14px"><table class="worksheet-table"><thead><tr><th style="min-width:210px">Step</th><th style="width:80px">Owner</th><th style="min-width:220px">Current behavior</th><th style="min-width:240px">Target behavior</th><th style="min-width:220px">Why</th></tr></thead><tbody id="worksheetRows">
+model judgment inside bounded stages
+             +
+explicit state / routing / verification / budgets / termination</div>
+     <div style="overflow:auto;margin-top:14px"><table class="worksheet-table"><thead><tr><th style="min-width:210px">Step</th><th style="width:80px">Owner</th><th style="min-width:220px">Baseline behavior</th><th style="min-width:240px">Target behavior</th><th style="min-width:220px">Why</th></tr></thead><tbody id="worksheetRows">
        ${s.worksheet.map((r,i)=>`<tr><td><textarea data-wi="${i}" data-wf="step">${esc(r.step)}</textarea></td><td><select data-wi="${i}" data-wf="owner">${["D","L","T","S"].map(v=>`<option value="${v}" ${r.owner===v?"selected":""}>${v}</option>`).join("")}</select></td><td><textarea data-wi="${i}" data-wf="current">${esc(r.current)}</textarea></td><td><textarea data-wi="${i}" data-wf="target">${esc(r.target)}</textarea></td><td><textarea data-wi="${i}" data-wf="reason">${esc(r.reason)}</textarea></td></tr>`).join("")}
      </tbody></table></div>
      <div class="worksheet-actions"><button id="addWorksheetRow">Add row</button><button id="copyWorksheet">Copy worksheet as Markdown</button><button id="downloadArchitecture">Download architecture-v0.md</button></div>
@@ -1308,7 +1304,7 @@ explicit workflow state / routing / iteration limits outside the LLM</div>
 }
 
 function worksheetMarkdown(rows){
-  let out = `# Architecture v0 — Current to Target\n\nLegend: **D** deterministic code · **L** LLM judgment · **T** tool/MCP · **S** Skill/domain expertise\n\n| Step | Owner | Current behavior | Target behavior | Why |\n|---|---|---|---|---|\n`;
+  let out = `# Architecture v0 — Supplied Baseline to Target\n\nLegend: **D** deterministic code · **L** LLM judgment · **T** tool/MCP · **S** Skill/domain expertise\n\n| Step | Owner | Baseline behavior | Target behavior | Why |\n|---|---|---|---|---|\n`;
   for(const r of rows){ const clean=x=>String(x||"").replace(/\|/g,"\\|").replace(/\n/g," "); out += `| ${clean(r.step)} | ${clean(r.owner)} | ${clean(r.current)} | ${clean(r.target)} | ${clean(r.reason)} |\n`; }
   out += `\n## Initial target architecture\n\n\`\`\`text\nUser question\n  ↓\nIntent / scope (LLM)\n  ↓\nStructured plan (LLM) → validate (code)\n  ↓\nScheduler / routing (code)\n  ↓\nMCP tools + Skills inside bounded worker nodes\n  ↓\nStructured findings / visualizations\n  ↓\nRubric critics (LLM)\n  ↓\nPass threshold + max revisions (code)\n  ↓\nFinalizer (LLM)\n\`\`\`\n`;
   return out;
@@ -1338,9 +1334,24 @@ function renderModule1Lesson(){
  </section>`;
 }
 
-function renderAnthropicCookbookStudy(m){
- const a=anthropicCookbookStudy[m.id]; if(!a)return "";
- return `<section class="source-code-study"><div class="eyebrow">Required free code study</div><h3>${esc(a.title)}</h3><ul>${a.items.map(x=>`<li><a href="${x[1]}" target="_blank" rel="noopener"><strong>${esc(x[0])}</strong></a> — ${esc(x[2])}</li>`).join("")}</ul></section>`;
+function renderStudyPlan(m,s){
+ const sources=moduleStudySources(m);
+ const prompts=assignments[m.id]?.sourceStudy||[];
+ const b=bookStudy[m.id];
+ return `<section class="section" id="study-plan-${m.id}">
+   <div class="eyebrow">One source list</div>
+   <h3 style="margin-top:5px">Study plan</h3>
+   <div class="lesson-callout"><strong>How to use this section</strong>This is the module's only reading/code-study list. Complete each required source once, then use the study prompts below to capture what matters for the lab.</div>
+   ${sources.map((r,i)=>`<div class="resource">
+      <input type="checkbox" id="r-${m.id}-${i}" ${s.resources[i]?"checked":""}>
+      <div><div class="r-title"><a href="${r.url}" target="_blank" rel="noopener">${esc(r.title)}</a></div><div class="r-note">${esc(r.note)}</div></div>
+      <span class="chip">${r.kind==="code"?"code study":"reading"}</span>
+   </div>`).join("")}
+   ${prompts.length?`<h4>What to capture from the study</h4><ol>${prompts.map(x=>`<li>${esc(x.replace(/^FREE (?:REQUIRED|source study):?\s*/i,""))}</li>`).join("")}</ol><div style="font-size:12px;color:var(--muted)">Record these observations in <code>SOURCE_NOTES.md</code> when the assignment calls for it.</div>`:""}
+   ${b?`<div class="book-map-box"><div><div class="book-pages">Optional Packt enrichment: ${esc(b.optionalPages)}</div><div style="font-size:12px;color:var(--muted)">${esc(b.optionalSections)}</div></div><div class="book-note">${esc(b.optionalNote)}</div></div>`:""}
+   <div style="font-size:12px;color:var(--muted)">No paid chapter is required for the module, assignment, or self-grade.</div>
+ </section>`;
+
 }
 
 function renderThroughProject(m){
@@ -1348,22 +1359,10 @@ function renderThroughProject(m){
  return `<section class="project-mile"><div class="eyebrow">Through-project milestone</div><h3>${esc(t.title)}</h3><p>${esc(t.build)}</p><div class="lesson-callout"><strong>Milestone gate</strong>${esc(t.gate)}</div><div class="project-files">${t.files.map(f=>`<code>${esc(f)}</code>`).join("")}</div><div style="margin-top:12px"><a class="btn" href="project.html">Open SQL Harness project</a></div></section>`;
 }
 
-function renderBookStudy(m){
- const b=bookStudy[m.id]; if(!b)return "";
- const free=(b.free||[]).map(x=>`<li><a href="${x[1]}" target="_blank" rel="noopener"><strong>${esc(x[0])}</strong></a> — ${esc(x[2])}</li>`).join("");
- return `<section class="section"><div class="eyebrow">Free-first source map</div><h3 style="margin-top:5px">Required free coverage + optional Packt enrichment</h3>
-   <div class="lesson-callout"><strong>Course guarantee</strong>No paid chapter is required to complete this module, its assignment, or its self-grade. The sources below cover the required material for free.</div>
-   <h4>Required / free sources</h4><ul>${free}</ul>
-   <div class="book-map-box"><div><div class="book-pages">Optional paid reading: ${esc(b.optionalPages)}</div><div style="font-size:12px;color:var(--muted)">${esc(b.optionalSections)}</div></div><div class="book-note">${esc(b.optionalNote)}</div></div>
-   <div style="font-size:12px;color:var(--muted)">If you own the book, use the page range for a deeper treatment. Skipping it must not block any lab.</div>
- </section>`;
-}
-
 function renderAssignment(m,s){
  const a=assignments[m.id]; if(!a)return "";
  return `<section class="assignment" id="assignment-${m.id}">
   <div class="assignment-head"><div><div class="eyebrow">Specific assignment</div><h3>${esc(a.title)}</h3><p>${esc(a.objective)}</p></div>${a.starter?`<a class="btn" href="${a.starter}" target="_blank">Open assignment file</a>`:""}</div>
-  ${a.sourceStudy?.length?`<div class="source-study"><h4>Source study / code archaeology — do this first</h4><ol>${a.sourceStudy.map(x=>`<li>${esc(x)}</li>`).join("")}</ol><div style="font-size:12px;margin-top:8px">Record the result in <code>SOURCE_NOTES.md</code> using the supplied template.</div></div>`:""}
   <h4>Programming tasks</h4><ol>${a.tasks.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>
   <h4>Fixed scenario / inputs</h4><div class="fixed-box"><ul>${a.fixed.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
   <h4>Constraints</h4><ul>${a.constraints.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
@@ -1392,25 +1391,13 @@ function renderDetail(m){
    ${m.id===0 ? renderModule0Lesson(m,s) : ""}
    ${m.id===1 ? renderModule1Lesson() : ""}
 
-   <section class="section">
-    <h3>Learning material</h3>
-    ${m.resources.map((r,i)=>`<div class="resource">
-      <input type="checkbox" id="r-${m.id}-${i}" ${s.resources[i]?"checked":""}>
-      <div><div class="r-title"><a href="${r.url}" target="_blank" rel="noopener">${esc(r.title)}</a></div><div class="r-note">${esc(r.note)}</div></div>
-      <span class="chip">${s.resources[i]?"complete":"resource"}</span>
-    </div>`).join("")}
-   </section>
-
-   ${renderAnthropicCookbookStudy(m)}
+   ${renderStudyPlan(m,s)}
    ${renderThroughProject(m)}
-   ${renderBookStudy(m)}
    ${renderAssignment(m,s)}
 
    <section class="section">
-    <h3>Lab summary & evidence</h3>
+    <h3>Evidence & completion</h3>
     <div class="lab-card">
-      <h4 style="margin-top:0">${esc(m.lab.title)}</h4>
-      <p>${esc(m.lab.description)}</p>
       <div class="deliverable"><strong>Deliverable:</strong> <code>${esc(m.lab.deliverable)}</code></div>
       <h4>Completion checklist</h4>
       <div class="checklist">
@@ -1454,7 +1441,7 @@ function renderDetail(m){
  </article>`;
 
  document.getElementById(`status-${m.id}`).onchange=e=>{s.status=e.target.value;save();renderSidebar();updateResume();};
- m.resources.forEach((_,i)=>document.getElementById(`r-${m.id}-${i}`).onchange=e=>{s.resources[i]=e.target.checked;if(s.status==="not-started")s.status="in-progress";save();renderSidebar();});
+ moduleStudySources(m).forEach((_,i)=>document.getElementById(`r-${m.id}-${i}`).onchange=e=>{s.resources[i]=e.target.checked;if(s.status==="not-started")s.status="in-progress";save();renderSidebar();});
  m.lab.checklist.forEach((_,i)=>document.getElementById(`c-${m.id}-${i}`).onchange=e=>{s.checklist[i]=e.target.checked;if(s.status==="not-started")s.status="in-progress";save();renderSidebar();});
  document.getElementById(`evidence-${m.id}`).oninput=e=>{s.labEvidence=e.target.value;save();};
  document.getElementById(`notes-${m.id}`).oninput=e=>{s.notes=e.target.value;save();};
