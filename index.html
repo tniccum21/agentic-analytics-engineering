@@ -897,7 +897,7 @@ const assignments = {
       "Both variants pass numeric verifier or failures are counted",
       "Comparison table includes all required metrics",
       "Decision memo identifies at least two benefits and two costs",
-      "Architecture decision log updated with the result"
+      "Record the keep/restrict/remove result as an ADR, including the measured evidence behind the decision"
     ],
     "deliverables": [
       "comparison_runs.csv",
@@ -1068,15 +1068,17 @@ const defaultWorksheet = () => ([
   {step:"Produce final answer", owner:"L", current:"The baseline model response is preserved as the final raw output.", target:"A finalizer consumes only approved state artifacts and verified evidence.", reason:"Final synthesis is model work, but it should operate on validated state."}
 ]);
 
+const legacySeedDecisions = [
+  {id:"ADR-001", title:"The application control plane owns lifecycle boundaries", status:"accepted", rationale:"Durable state, budgets, checkpoints, stage transitions, approval gates, and convergence criteria must be explicit and inspectable; an agent harness may still own an autonomous model↔tool loop inside a bounded stage.", consequences:"We do not hard-code every tool choice. We bound autonomous loops with stage-level contracts, budgets, and exit criteria."},
+  {id:"ADR-002", title:"MCP is the capability layer, not the orchestrator", status:"accepted", rationale:"MCP tools/resources expose data access and executable capabilities; the host workflow should own sequencing and lifecycle.", consequences:"Retries, scheduling, task dependency resolution, and revision limits stay outside individual MCP tools."},
+  {id:"ADR-003", title:"Planning is model-driven but schema-bound", status:"proposed", rationale:"Task decomposition benefits from LLM judgment, but plans must be explicit, typed, and validated before execution.", consequences:"Planner returns an AnalysisPlan object rather than hidden prose/reasoning."},
+  {id:"ADR-004", title:"Critique is model-driven; acceptance is code-driven", status:"proposed", rationale:"LLMs are useful evaluators when given domain rubrics, but they should not control unbounded self-reflection.", consequences:"Critics return structured scores/verdicts; code enforces pass thresholds and maximum revisions."}
+];
+
 const defaultState = () => ({
   theme:"light",
   currentModule:0,
-  architectureDecisions:[
-    {id:"ADR-001", title:"The application control plane owns lifecycle boundaries", status:"accepted", rationale:"Durable state, budgets, checkpoints, stage transitions, approval gates, and convergence criteria must be explicit and inspectable; an agent harness may still own an autonomous model↔tool loop inside a bounded stage.", consequences:"We do not hard-code every tool choice. We bound autonomous loops with stage-level contracts, budgets, and exit criteria."},
-    {id:"ADR-002", title:"MCP is the capability layer, not the orchestrator", status:"accepted", rationale:"MCP tools/resources expose data access and executable capabilities; the host workflow should own sequencing and lifecycle.", consequences:"Retries, scheduling, task dependency resolution, and revision limits stay outside individual MCP tools."},
-    {id:"ADR-003", title:"Planning is model-driven but schema-bound", status:"proposed", rationale:"Task decomposition benefits from LLM judgment, but plans must be explicit, typed, and validated before execution.", consequences:"Planner returns an AnalysisPlan object rather than hidden prose/reasoning."},
-    {id:"ADR-004", title:"Critique is model-driven; acceptance is code-driven", status:"proposed", rationale:"LLMs are useful evaluators when given domain rubrics, but they should not control unbounded self-reflection.", consequences:"Critics return structured scores/verdicts; code enforces pass thresholds and maximum revisions."}
-  ],
+  architectureDecisions:[],
   modules:Object.fromEntries(modules.map(m=>[m.id,{
     status:"not-started",
     resources:Array(moduleStudySources(m).length).fill(false),
@@ -1112,7 +1114,11 @@ function normalizeState(){
       if(legacyWorksheet) state.modules[m.id].worksheet=defaultWorksheet();
     }
   });
-  if(!Array.isArray(state.architectureDecisions)) state.architectureDecisions=defaultState().architectureDecisions;
+  if(!Array.isArray(state.architectureDecisions)) state.architectureDecisions=[];
+  const untouchedLegacySeeds =
+    state.architectureDecisions.length===legacySeedDecisions.length &&
+    state.architectureDecisions.every((d,i)=>JSON.stringify(d)===JSON.stringify(legacySeedDecisions[i]));
+  if(untouchedLegacySeeds) state.architectureDecisions=[];
   state.theme=state.theme||"light";
   state.currentModule=Number.isInteger(state.currentModule)?state.currentModule:0;
 }
@@ -1294,12 +1300,17 @@ explicit state / routing / verification / budgets / termination</div>
      <div class="worksheet-actions"><button id="addWorksheetRow">Add row</button><button id="copyWorksheet">Copy worksheet as Markdown</button><button id="downloadArchitecture">Download architecture-v0.md</button></div>
    </section>
    <section class="section" id="adr">
-     <h3>Architecture Decision Log</h3>
-     <p style="color:var(--muted)">Decisions persist across the entire course. Treat proposed decisions as hypotheses until later labs and evals justify them.</p>
+     <h3>Architecture decision record (ADR) log</h3>
+     <div class="lesson-callout">
+       <strong>What is an ADR, and why is it here?</strong>
+       An <strong>Architecture Decision Record</strong> is a short record of an important design choice: what was decided, why, and what consequences follow. The point is not paperwork. Later modules will produce evidence that may confirm, reject, or supersede earlier choices, and the ADR log gives you a durable record of how the architecture evolved.
+     </div>
+     <p><strong>What to do in Module 0:</strong> you do <em>not</em> need to add an ADR just because this section exists. Add one only if your redesign of the supplied Northstar baseline introduces a meaningful choice that you expect to revisit later.</p>
+     <p style="color:var(--muted)">Good ADR topics are choices with alternatives, such as “planner stays model-driven but must emit a typed plan” or, later, “retain/remove CrewAI after the controlled comparison.” Routine implementation details do not need ADRs. When evidence changes a decision, mark the old ADR <em>superseded</em> and add a new one rather than rewriting history.</p>
      <div id="adrList" class="adr-list"></div>
-     <h4>Add decision</h4>
-     <div class="adr-form"><input id="adrTitle" placeholder="Decision title"><select id="adrStatus"><option value="proposed">Proposed</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option><option value="superseded">Superseded</option></select><textarea id="adrRationale" placeholder="Rationale — why are we making this choice?"></textarea><textarea id="adrConsequences" placeholder="Consequences — what does this imply for the implementation?"></textarea></div>
-     <div class="worksheet-actions"><button class="primary" id="addAdr">Add architecture decision</button><button id="downloadAdr">Download decision-log.md</button></div>
+     <h4>Record a decision when you actually make one</h4>
+     <div class="adr-form"><input id="adrTitle" placeholder="Decision title, e.g. 'Use deterministic retry budgets'"><select id="adrStatus"><option value="proposed">Proposed</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option><option value="superseded">Superseded</option></select><textarea id="adrRationale" placeholder="Rationale — what alternatives did you consider, and why this choice?"></textarea><textarea id="adrConsequences" placeholder="Consequences — what does this choice require or rule out?"></textarea></div>
+     <div class="worksheet-actions"><button class="primary" id="addAdr">Record architecture decision</button><button id="downloadAdr">Download decision-log.md</button></div>
    </section>`;
 }
 
@@ -1313,7 +1324,12 @@ function adrMarkdown(){ let out="# Architecture Decision Log\n\n"; for(const d o
 function downloadText(filename,text){ const blob=new Blob([text],{type:"text/markdown"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href); }
 function renderAdrList(){
   const el=document.getElementById("adrList"); if(!el)return;
-  el.innerHTML=state.architectureDecisions.map((d,i)=>`<div class="adr-card"><div class="adr-head"><div><div class="adr-title">${esc(d.id)} — ${esc(d.title)}</div><div class="adr-meta">Status: ${esc(d.status)}</div></div><button data-deladr="${i}">Delete</button></div><div class="adr-body"><strong>Rationale:</strong> ${esc(d.rationale)}</div><div class="adr-body"><strong>Consequences:</strong> ${esc(d.consequences)}</div></div>`).join("");
+  if(!state.architectureDecisions.length){
+    el.innerHTML=`<div class="concept-card"><strong>No learner ADRs yet.</strong><p style="margin-top:6px">That is fine. Record one only when the course gives you a real architecture choice worth preserving and revisiting.</p></div>`;
+    return;
+  }
+  el.innerHTML=state.architectureDecisions.map((d,i)=>`<div class="adr-card"><div class="adr-head"><div><div class="adr-title">${esc(d.id)} — ${esc(d.title)}</div><div class="adr-meta">Status: <select data-adrstatus="${i}"><option value="proposed" ${d.status==="proposed"?"selected":""}>proposed</option><option value="accepted" ${d.status==="accepted"?"selected":""}>accepted</option><option value="rejected" ${d.status==="rejected"?"selected":""}>rejected</option><option value="superseded" ${d.status==="superseded"?"selected":""}>superseded</option></select></div></div><button data-deladr="${i}">Remove</button></div><div class="adr-body"><strong>Rationale:</strong> ${esc(d.rationale)}</div><div class="adr-body"><strong>Consequences:</strong> ${esc(d.consequences)}</div></div>`).join("");
+  el.querySelectorAll("[data-adrstatus]").forEach(s=>s.onchange=()=>{state.architectureDecisions[Number(s.dataset.adrstatus)].status=s.value;save();renderAdrList();});
   el.querySelectorAll("[data-deladr]").forEach(b=>b.onclick=()=>{state.architectureDecisions.splice(Number(b.dataset.deladr),1);save();renderAdrList();});
 }
 
