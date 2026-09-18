@@ -5,7 +5,7 @@ Prove that orchestration code can depend on stable capability interfaces rather 
 ## Tasks
 1. Create AnalyticsCapabilities with get_schema(table), run_readonly_query(sql), and render_chart(spec).
 2. Implement LocalNorthstarAdapter against the bundled SQLite data.
-3. Implement MCPAnalyticsAdapter whose methods map to your MCP client, but normalize outputs/errors to the same local interface.
+3. Implement MCPAnalyticsAdapter against the **course-supplied Northstar MCP server**, normalizing tool outputs/errors to the same local interface.
 4. Classify 12 supplied concerns as control plane, agent harness, MCP/tool, resource/context, or Skill.
 5. Run the same analysis function against the local adapter and MCP adapter without changing analysis code.
 
@@ -38,11 +38,11 @@ Prove that orchestration code can depend on stable capability interfaces rather 
 
 ## Through-project milestone — SQL Harness M4: Replaceable Hands
 
-Create capability adapters so the harness does not know whether SQL runs locally or through MCP.
+Create capability adapters so the harness does not know whether Northstar SQL runs directly through SQLite or through the course's MCP boundary.
 
 ### Required implementation
 1. Keep `SQLiteReadOnlyAdapter` behind `SchemaProvider` and `SqlExecutor` interfaces.
-2. Add `McpSqlAdapter` with the same interfaces (it may use a stub/fake MCP client until connected).
+2. Add `McpSqlAdapter` with the same interfaces and connect it to the **course-supplied Northstar MCP server**. Unit tests may use the official SDK's in-memory client; no external MCP server is needed.
 3. Add an adapter contract test suite that runs against both implementations/mocks.
 4. Schema discovery must return structured context rather than a raw prompt blob.
 5. Execution must return a structured `QueryResult`.
