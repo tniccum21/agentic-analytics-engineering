@@ -13,7 +13,7 @@ The course is deliberately self-contained:
 - all required readings and code studies are available free online;
 - the bundled Northstar Retail SQLite database is the course dataset;
 - the course's own `northstar_mcp/` server is the **only analytics MCP server used in the course**;
-- no personal, enterprise, xFalcon, or other external analytics MCP server is required or used.
+- no pre-existing personal or enterprise analytics MCP server is required or used.
 
 ## Through-project architecture
 
