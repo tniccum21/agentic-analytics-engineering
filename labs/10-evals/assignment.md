@@ -2,10 +2,18 @@
 
 Create regression tests that measure nodes, trajectories, and final outcomes separately.
 
-## Source study / code archaeology
+## Study evidence
+
+Complete the module's single **Study Plan** in the course site first. This section is not an additional reading list; it specifies the observations and artifacts to capture from those sources.
 1. FREE source study: complete the required evaluation material and inspect public `chapter09/self_improving.py`. Treat sensing → critic → planner → learning as a CHANGE-PROPOSAL loop, not permission to self-modify production automatically. Optional book deep dive: Ch. 9 pp. 265–277.
 2. Inspect chapter09/LLM_COMPARISON.md. Record the structured-output parsing failure as a regression test candidate.
 3. Define PROMOTION_POLICY.md before modifying prompts: which benchmark metrics may regress by zero, which have tolerances, and what triggers rollback.
+
+
+### Additional code-study prompts
+
+- `capabilities/text_to_sql/evaluation/`: inspect the Promptfoo configuration, test inputs, expected outputs, and result workflow.
+- `evals/agentic_search/reproduce_agentic_search_benchmarks.ipynb`: inspect the mechanics of reproducible benchmark runs. Borrow the experimental discipline, not the search-specific task.
 
 ## Tasks
 1. Create 25 cases: 5 numeric known-answer, 5 routing/tool-choice, 5 ambiguous/clarification, 5 injected-failure, 5 visualization/quality cases.
@@ -40,10 +48,6 @@ Create regression tests that measure nodes, trajectories, and final outcomes sep
 - `evals/candidate-results.json`
 - `evals/promotion-decision.md`
 
-## Required Anthropic cookbook study
-
-- `capabilities/text_to_sql/evaluation/`: inspect the Promptfoo configuration, test inputs, expected outputs, and result workflow.
-- `evals/agentic_search/reproduce_agentic_search_benchmarks.ipynb`: inspect the mechanics of reproducible benchmark runs. Borrow the experimental discipline, not the search-specific task.
 
 ## Through-project milestone — SQL Harness M10: Frozen Benchmark + Evals
 
