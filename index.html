@@ -1057,7 +1057,7 @@ function moduleStudySources(m){
 }
 
 const KEY = "agenticAnalyticsCourseProgressV41";
-const defaultWorksheet = () => ([
+const legacyFilledWorksheet = [
   {step:"Receive question + Northstar schema", owner:"D", current:"The course runner supplies one question and the Northstar schema to the baseline model call.", target:"UserRequest and SchemaContext become explicit typed state.", reason:"Inputs should be inspectable and reproducible rather than hidden in conversational context."},
   {step:"Interpret request", owner:"L", current:"The baseline model interprets the question inside a single call.", target:"Model interpretation remains useful, but the result becomes an explicit route/request artifact.", reason:"Semantic interpretation benefits from model judgment; downstream control should not remain implicit."},
   {step:"Choose approach / propose SQL", owner:"L", current:"The baseline model decides what analysis or SQL to produce without a typed plan or independent checks.", target:"Simple requests route directly; complex requests may produce a typed plan before SQL generation.", reason:"Planning can remain model-driven while its structure and validity become inspectable."},
@@ -1066,7 +1066,15 @@ const defaultWorksheet = () => ([
   {step:"Check results / ground claims", owner:"D", current:"The baseline has no required result verifier or evidence contract.", target:"Result and claim verifiers connect settled numeric statements to query evidence.", reason:"A plausible answer is not sufficient evidence of correctness."},
   {step:"Decide to retry / revise / stop", owner:"D", current:"The supplied baseline has no repair loop; one model response is recorded as-is.", target:"Code owns explicit attempt budgets, retry/revision limits, and terminal states.", reason:"Lifecycle and convergence must be bounded and observable."},
   {step:"Produce final answer", owner:"L", current:"The baseline model response is preserved as the final raw output.", target:"A finalizer consumes only approved state artifacts and verified evidence.", reason:"Final synthesis is model work, but it should operate on validated state."}
-]);
+];
+
+const defaultWorksheet = () => Array.from({length:8},()=>({
+  step:"",
+  owner:"",
+  current:"",
+  target:"",
+  reason:""
+}));
 
 const legacySeedDecisions = [
   {id:"ADR-001", title:"The application control plane owns lifecycle boundaries", status:"accepted", rationale:"Durable state, budgets, checkpoints, stage transitions, approval gates, and convergence criteria must be explicit and inspectable; an agent harness may still own an autonomous model↔tool loop inside a bounded stage.", consequences:"We do not hard-code every tool choice. We bound autonomous loops with stage-level contracts, budgets, and exit criteria."},
@@ -1111,7 +1119,8 @@ function normalizeState(){
       if(!Array.isArray(state.modules[m.id].quizAnswers) || state.modules[m.id].quizAnswers.length!==4) state.modules[m.id].quizAnswers=["","","",""];
       if(!Array.isArray(state.modules[m.id].worksheet) || state.modules[m.id].worksheet.length===0) state.modules[m.id].worksheet=defaultWorksheet();
       const legacyWorksheet=state.modules[m.id].worksheet.some(r=>/enterprise data|existing MCP capabilities|current system/i.test(String(r.step)+" "+String(r.current)));
-      if(legacyWorksheet) state.modules[m.id].worksheet=defaultWorksheet();
+      const untouchedFilledWorksheet=JSON.stringify(state.modules[m.id].worksheet)===JSON.stringify(legacyFilledWorksheet);
+      if(legacyWorksheet || untouchedFilledWorksheet) state.modules[m.id].worksheet=defaultWorksheet();
     }
   });
   if(!Array.isArray(state.architectureDecisions)) state.architectureDecisions=[];
@@ -1270,7 +1279,7 @@ function renderModule0Lesson(m,s){
    </section>
    <section class="section" id="worksheet">
      <h3>Lab 0 worksheet — Map and redesign the supplied baseline</h3>
-     <p style="color:var(--muted)">Use the course artifacts <code>project/00-baseline.md</code>, <code>project/sql_harness/baseline.py</code>, and the bundled Northstar schema. The baseline is intentionally weak; the task is to identify where explicit control, state, verification, and capability boundaries should be introduced.</p>
+     <p style="color:var(--muted)">Use the course artifacts <code>project/00-baseline.md</code>, <code>project/sql_harness/baseline.py</code>, and the bundled Northstar schema. The worksheet is intentionally blank: identifying the baseline steps, assigning D/L/T/S ownership, and proposing the target behavior are the exercise.</p>
      <div class="diagram">COURSE-SUPPLIED BASELINE
 
 USER QUESTION + NORTHSTAR SCHEMA
@@ -1295,7 +1304,7 @@ model judgment inside bounded stages
              +
 explicit state / routing / verification / budgets / termination</div>
      <div style="overflow:auto;margin-top:14px"><table class="worksheet-table"><thead><tr><th style="min-width:210px">Step</th><th style="width:80px">Owner</th><th style="min-width:220px">Baseline behavior</th><th style="min-width:240px">Target behavior</th><th style="min-width:220px">Why</th></tr></thead><tbody id="worksheetRows">
-       ${s.worksheet.map((r,i)=>`<tr><td><textarea data-wi="${i}" data-wf="step">${esc(r.step)}</textarea></td><td><select data-wi="${i}" data-wf="owner">${["D","L","T","S"].map(v=>`<option value="${v}" ${r.owner===v?"selected":""}>${v}</option>`).join("")}</select></td><td><textarea data-wi="${i}" data-wf="current">${esc(r.current)}</textarea></td><td><textarea data-wi="${i}" data-wf="target">${esc(r.target)}</textarea></td><td><textarea data-wi="${i}" data-wf="reason">${esc(r.reason)}</textarea></td></tr>`).join("")}
+       ${s.worksheet.map((r,i)=>`<tr><td><textarea data-wi="${i}" data-wf="step">${esc(r.step)}</textarea></td><td><select data-wi="${i}" data-wf="owner"><option value="" ${!r.owner?"selected":""}>—</option>${["D","L","T","S"].map(v=>`<option value="${v}" ${r.owner===v?"selected":""}>${v}</option>`).join("")}</select></td><td><textarea data-wi="${i}" data-wf="current">${esc(r.current)}</textarea></td><td><textarea data-wi="${i}" data-wf="target">${esc(r.target)}</textarea></td><td><textarea data-wi="${i}" data-wf="reason">${esc(r.reason)}</textarea></td></tr>`).join("")}
      </tbody></table></div>
      <div class="worksheet-actions"><button id="addWorksheetRow">Add row</button><button id="copyWorksheet">Copy worksheet as Markdown</button><button id="downloadArchitecture">Download architecture-v0.md</button></div>
    </section>
@@ -1317,7 +1326,7 @@ explicit state / routing / verification / budgets / termination</div>
 function worksheetMarkdown(rows){
   let out = `# Architecture v0 — Supplied Baseline to Target\n\nLegend: **D** deterministic code · **L** LLM judgment · **T** tool/MCP · **S** Skill/domain expertise\n\n| Step | Owner | Baseline behavior | Target behavior | Why |\n|---|---|---|---|---|\n`;
   for(const r of rows){ const clean=x=>String(x||"").replace(/\|/g,"\\|").replace(/\n/g," "); out += `| ${clean(r.step)} | ${clean(r.owner)} | ${clean(r.current)} | ${clean(r.target)} | ${clean(r.reason)} |\n`; }
-  out += `\n## Initial target architecture\n\n\`\`\`text\nUser question\n  ↓\nIntent / scope (LLM)\n  ↓\nStructured plan (LLM) → validate (code)\n  ↓\nScheduler / routing (code)\n  ↓\nMCP tools + Skills inside bounded worker nodes\n  ↓\nStructured findings / visualizations\n  ↓\nRubric critics (LLM)\n  ↓\nPass threshold + max revisions (code)\n  ↓\nFinalizer (LLM)\n\`\`\`\n`;
+  out += `\n## Design notes\n\nAdd any architecture assumptions, open questions, or tradeoffs you want to carry into later modules.\n`;
   return out;
 }
 function adrMarkdown(){ let out="# Architecture Decision Log\n\n"; for(const d of state.architectureDecisions){ out += `## ${d.id}: ${d.title}\n\n- **Status:** ${d.status}\n- **Rationale:** ${d.rationale}\n- **Consequences:** ${d.consequences}\n\n`; } return out; }
@@ -1473,7 +1482,7 @@ function renderDetail(m){
  if(m.id===0){
    (s.quizAnswers||[]).forEach((_,i)=>{ const q=document.getElementById(`q-0-${i}`); if(q) q.oninput=e=>{s.quizAnswers[i]=e.target.value;save();}; });
    document.querySelectorAll("[data-wi]").forEach(el=>{ el.oninput=el.onchange=e=>{const i=Number(e.target.dataset.wi),field=e.target.dataset.wf;s.worksheet[i][field]=e.target.value;save();}; });
-   document.getElementById("addWorksheetRow").onclick=()=>{s.worksheet.push({step:"",owner:"D",current:"",target:"",reason:""});save();renderDetail(m);document.getElementById("worksheet").scrollIntoView();};
+   document.getElementById("addWorksheetRow").onclick=()=>{s.worksheet.push({step:"",owner:"",current:"",target:"",reason:""});save();renderDetail(m);document.getElementById("worksheet").scrollIntoView();};
    document.getElementById("copyWorksheet").onclick=async()=>{await navigator.clipboard.writeText(worksheetMarkdown(s.worksheet));toast("Worksheet copied as Markdown");};
    document.getElementById("downloadArchitecture").onclick=()=>downloadText("architecture-v0.md",worksheetMarkdown(s.worksheet));
    renderAdrList();
