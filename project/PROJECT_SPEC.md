@@ -8,7 +8,8 @@ Build a model-agnostic, tool-agnostic agentic harness for trustworthy natural-la
 
 - **Read only by construction:** only SELECT/CTE analytics queries may reach the execution adapter.
 - **Typed artifacts:** request, plan, schema context, SQL attempt, verification, execution result, claim, evaluation record, and configuration version are first-class objects.
-- **Replaceable hands:** the same harness runs against the bundled SQLite database and a real MCP-backed SQL/data capability by swapping adapters.
+- **Replaceable hands:** the same harness runs against the bundled Northstar SQLite database either directly or through the **course-supplied Northstar MCP server** by swapping adapters.
+- **Self-contained infrastructure:** no user-owned, personal, or enterprise analytics MCP server is required or used anywhere in the course.
 - **Bounded autonomy:** model/tool loops have max attempts, budgets, timeouts, and explicit terminal states.
 - **Independent verification:** generator output is not trusted merely because the generator says it is correct.
 - **Evidence-grounded answers:** settled numeric claims trace to query/result evidence.
